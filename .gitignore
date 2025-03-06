@@ -2,3 +2,7 @@
 **/.DS_Store
 .vscode
 **/.vscode
+.vagrant
+.vagrant/**
+**/.vagrant
+**/.vagrant/**
