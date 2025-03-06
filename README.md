@@ -4,7 +4,21 @@ This is a set of materials designed to allow anyone to create a portable set of 
 
 ## Pre-requisites
 
+You must have the following utilities installed in order to provision:
+
+* `make`
+* `vagrant`
+
+Additionally, this must be run on an `x86_64` architecture machine.
+
 ## Installation
+
+Run `make check` to verify dependencies are installed and defaults are correct.
+Further, run `make status` to confirm that Vagrant is installed and running properly.
+
+Running `make up` will provision the "unicycle" system configuration.  To use any other configuration, first `export SYSTEM_CONFIGURATION=<system configuration string>` where `<system configuration string>` is one of "unicycle", "bicycle", "car", or "semi" _without the quotes_.
+
+Running `make down` will de-provision the system and cannot be undone.  Make sure you really want to do this.
 
 ## Usage
 
