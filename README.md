@@ -11,6 +11,21 @@ You must have the following utilities installed in order to provision:
 
 Additionally, this must be run on an `x86_64` architecture machine.
 
+## System Configurations
+
+The `x86_64` architecture host can be configured one of four ways:
+
+- Unicycle -- As_ a single logical machine running the Exchange and an Agent
+- Bicycle -- As three VMs, with
+  - the primary running the Exchange and an Agent using 1/2 of the available resources, and
+  - the remaining two running Agents each using 1/4 of the available resources.
+- Car -- As five VMs (recommended for the 16GB RAM configuration only), with
+  - the primary running the Exchange and an Agent using 1/2 of the available resources, and
+  - the remaining four running Agents each using 1/8 of the available resources.
+- Semi -- As seven VMs (recommended for the 16GB RAM configuration only), with
+  - the primary running the Exchange and an Agent using 1/4 of the available resources, and
+  - the remaining six running Agents each using 1/8 of the available resources.
+
 ## Installation
 
 Run `make check` to verify dependencies are installed and defaults are correct.
