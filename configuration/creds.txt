@@ -1,0 +1,55 @@
+    default: ----------- Summary of what was done:
+    default:   1. Started Horizon management hub services: Agbot, CSS, Exchange, FDO, Mongo DB, Postgres DB, Postgres DB FDO, Bao
+    default:   2. Created exchange resources: system organization (IBM) admin user, user organization (myorg) and admin user, and agbot
+    default:     Automatically generated these passwords/tokens:
+    default:       export EXCHANGE_ROOT_PW=aJKoLGsgi7PdUXTWbnT1aLH8c9Lnay
+    default:       export HZN_ORG_ID=root
+    default:       export HZN_EXCHANGE_USER_AUTH=root:aJKoLGsgi7PdUXTWbnT1aLH8c9Lnay
+    default:
+    default:       export EXCHANGE_HUB_ADMIN_PW=TfMp3yoEGujDOJRormLWh2PoRnp6HL
+    default:       export HZN_ORG_ID=root
+    default:       export HZN_EXCHANGE_USER_AUTH=hubadmin:TfMp3yoEGujDOJRormLWh2PoRnp6HL
+    default:
+    default:       export EXCHANGE_SYSTEM_ADMIN_PW=IoRtuizNMax8ZpalvtnjW8noQ4bF0F
+    default:       export HZN_ORG_ID=IBM
+    default:       export HZN_EXCHANGE_USER_AUTH=admin:IoRtuizNMax8ZpalvtnjW8noQ4bF0F
+    default:
+    default:       export AGBOT_TOKEN=wHBIR0fnIoNqqPzFshXwJrbEloOFbx
+    default:       export HZN_ORG_ID=IBM
+    default:       export HZN_EXCHANGE_USER_AUTH=agbot:wHBIR0fnIoNqqPzFshXwJrbEloOFbx
+    default:
+    default:       export EXCHANGE_USER_ADMIN_PW=N8HeTdfokjX4uIbLuxPyRAEJ0hBFdL
+    default:       export HZN_ORG_ID=myorg
+    default:       export HZN_EXCHANGE_USER_AUTH=admin:N8HeTdfokjX4uIbLuxPyRAEJ0hBFdL
+    default:
+    default:       export HZN_DEVICE_TOKEN=ECR9tl6F68AsfWCjCxvTJQIfzeBBpI
+    default:       export HZN_ORG_ID=myorg
+    default:       export HZN_EXCHANGE_USER_AUTH=node1:ECR9tl6F68AsfWCjCxvTJQIfzeBBpI
+    default:
+    default:     Important: save these generated passwords/tokens in a safe place. You will not be able to query them from Horizon.
+    default:     Authentication to the Exchange is in the format <organization>/<identity>:<password> or $HZN_ORG_ID/$HZN_EXCHANGE_USER_AUTH.
+    default:   3. Installed and configured a PostgreSQL database instance for the Exchange. Important: save the generated user password in a safe place.
+    default:        export POSTGRES_USER=admin
+    default:        export EXCHANGE_DB_PW=lHf8mLDrutgyvHOzpR7xTtJLQ7Uv2V
+    default:   4. Installed and configured the Horizon CLI (hzn)
+    default:   5. Created a Horizon developer key pair
+    default:   6. Created a bao instance: http://127.0.0.1:8200/v1/sys/seal-status
+    default:     Automatically generated this key/token:
+    default:       export BAO_UNSEAL_KEY=C8pR0KGDy0/QykuZE2N29tYWbaIXOlstGa4gwwC+8zM=
+    default:       export BAO_ROOT_TOKEN=s.9hQVIF6VgdtftjOT54brWwOM
+    default:
+    default:     Important: save this generated key/token in a safe place. You will not be able to query them from Horizon.
+    default:   7. Created a FDO Owner Service instance.
+    default:     Run test-fdo.sh to simulate the transfer of a device and automatic workload provisioning.
+    default:     FDO Owner Service on port 8042 API credentials:
+    default:       export FDO_OWN_SVC_AUTH=apiUser:xmV2KVzCIfEhaZm8QAmWU2nRPf7fgG
+    default:   8. Created and configured a PostgreSQL database instance for the FDO Owner Service. Important: save the generated user password in a safe place.
+    default:         export FDO_OWN_SVC_DB_USER=fdouser
+    default:         export FDO_OWN_SVC_DB_PASSWORD=zPOFhLIydGwbUDpGQXfVcvf7gvTo7r
+    default:
+    default:   9. Added the hzn auto-completion file to ~/.bashrc (but you need to source that again for it to take effect in this shell session)
+    default:
+    default: For what to do next, see: https://github.com/open-horizon/devops/blob/master/mgmt-hub/README.md#all-in-1-what-next
+    default: Before running the commands in the What To Do Next section, copy/paste/run these commands in your terminal:
+    default:   export HZN_ORG_ID=myorg
+    default:   export HZN_EXCHANGE_USER_AUTH=admin:N8HeTdfokjX4uIbLuxPyRAEJ0hBFdL

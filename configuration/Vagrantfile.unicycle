@@ -1,0 +1,19 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.disk :disk, size: "50GB", primary: true
+  config.vm.network "public_network", bridge: "en0: Wi-Fi"
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "4096"
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get -y update
+    apt-get -y upgrade
+    apt-get install -y gcc make git curl jq net-tools docker.io
+    # export HZN_TRANSPORT=https
+    # export BAO_DISABLE_TLS=false
+    export CSS_IMAGE_TAG=1.10.1-1577
+    export MONGO_IMAGE_TAG=4.0.6
+    export HZN_LISTEN_IP=127.0.0.1
+    curl -sSL https://raw.githubusercontent.com/open-horizon/devops/master/mgmt-hub/deploy-mgmt-hub.sh | bash -s -- -A -R -E
+  SHELL
+end
