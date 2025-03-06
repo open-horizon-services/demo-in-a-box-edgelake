@@ -9,7 +9,7 @@ You must have the following utilities installed in order to provision:
 * `make`
 * `vagrant`
 
-Additionally, this must be run on an `x86_64` architecture machine.
+Additionally, this must be run on an `x86_64` architecture machine running a Debian-based OS such as Ubuntu.
 
 ## System Configurations
 
