@@ -15,7 +15,7 @@ Additionally, this must be run on an `x86_64` architecture machine.
 
 The `x86_64` architecture host can be configured one of four ways:
 
-- Unicycle -- As_ a single logical machine running the Exchange and an Agent
+- Unicycle -- As a single logical machine running the Exchange and an Agent
 - Bicycle -- As three VMs, with
   - the primary running the Exchange and an Agent using 1/2 of the available resources, and
   - the remaining two running Agents each using 1/4 of the available resources.
