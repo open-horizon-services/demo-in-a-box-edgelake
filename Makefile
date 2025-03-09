@@ -28,6 +28,9 @@ init: up
 up:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up
 
+connect:
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh
+
 status:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant status
 
@@ -43,4 +46,4 @@ else
 	@xdg-open http://127.0.0.1:8123
 endif
 
-.PHONY: default check stop init up status down destroy browse
+.PHONY: default check stop init up status down destroy browse connect
