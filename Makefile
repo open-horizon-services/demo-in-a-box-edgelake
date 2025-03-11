@@ -26,7 +26,7 @@ stop:
 init: up
 
 up:
-	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up | tee summary.txt
 
 connect:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh
