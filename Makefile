@@ -27,6 +27,9 @@ init: up
 
 up:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up | tee summary.txt
+	@tail -n 2 summary.txt | cut -c 16- >> ~/.bashrc
+	@tail -n 2 summary.txt | cut -c 16- > mycreds.env
+	@source mycreds.env
 
 connect:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh
