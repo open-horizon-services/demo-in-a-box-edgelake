@@ -1,0 +1,38 @@
+Vagrant.configure("2") do |config|
+    config.vm.define "agent1" do |agent1|
+      agent1.vm.box = "ubuntu/jammy64"
+      config.vm.disk :disk, size: "20GB", primary: true
+      config.vm.network "public_network", bridge: "en0: Wi-Fi"
+      config.vm.provider "virtualbox" do |vb|
+        vb.memory = "2048"
+      end
+      agent1.vm.hostname = "agent1"
+      agent1.vm.provision "shell", inline: <<-SHELL
+      apt-get -y update
+      apt-get -y upgrade
+      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose
+      touch agent-install.crt
+      export HZN_ORG_ID=${HZN_ORG_ID}
+      export HZN_EXCHANGE_USER_AUTH=${HZN_EXCHANGE_USER_AUTH}
+      export HZN_EXCHANGE_URL=http://10.0.2.15:3090/v1
+      export HZN_FSS_CSSURL=http://10.0.2.15:9443/
+      export HZN_AGBOT_URL=http://10.0.2.15:3111
+      export HZN_FDO_SVC_URL=http://10.0.2.15:9008/api
+      echo "HZN_ORG_ID=${HZN_ORG_ID}" > agent-install.cfg
+      echo "HZN_EXCHANGE_USER_AUTH=${HZN_EXCHANGE_USER_AUTH}" >> agent-install.cfg
+      echo "HZN_EXCHANGE_URL=http://10.0.2.15:3090/v1" >> agent-install.cfg
+      echo "HZN_FSS_CSSURL=http://10.0.2.15:9443/" >> agent-install.cfg
+      echo "HZN_AGBOT_URL=http://10.0.2.15:3111" >> agent-install.cfg
+      echo "HZN_FDO_SVC_URL=http://10.0.2.15:9008/api" >> agent-install.cfg
+      
+      echo "HZN_ORG_ID=${HZN_ORG_ID}" >> ~/.bashrc
+      echo "HZN_EXCHANGE_USER_AUTH=${HZN_EXCHANGE_USER_AUTH}" >> ~/.bashrc
+      echo "HZN_EXCHANGE_URL=http://10.0.2.15:3090/v1" >> ~/.bashrc
+      echo "HZN_FSS_CSSURL=http://10.0.2.15:9443/" >> ~/.bashrc
+      echo "HZN_AGBOT_URL=http://10.0.2.15:3111" >> ~/.bashrc
+      echo "HZN_FDO_SVC_URL=http://10.0.2.15:9008/api" >> ~/.bashrc
+      curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i anax: -k ./agent-install.cfg -c css: -p IBM/pattern-ibm.helloworld -w '*' -T 120
+    SHELL
+  end
+end
+  

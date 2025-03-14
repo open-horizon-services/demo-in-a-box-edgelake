@@ -3,7 +3,9 @@ export HZN_ORG_ID ?= myorg
 
 # Which system configuration to be provisioned
 export SYSTEM_CONFIGURATION ?= unicycle
+export VAGRANT_HUB := "./configuration/Vagrantfile.hub"
 export VAGRANT_VAGRANTFILE := "./configuration/Vagrantfile.${SYSTEM_CONFIGURATION}"
+export VAGRANT_TEMPLATE := "./configuration/Vagrantfile.${SYSTEM_CONFIGURATION}.template"
 
 # Detect Operating System running Make
 OS := $(shell uname -s)
@@ -15,6 +17,7 @@ check:
 	@echo "ENVIRONMENT VARIABLES"
 	@echo "====================="
 	@echo "SYSTEM_CONFIGURATION  default: unicycle                              actual: ${SYSTEM_CONFIGURATION}"
+	@echo "VAGRANT_TEMPLATE      default: Vagrantfile.unicycle.template         actual: ${VAGRANT_TEMPLATE}"
 	@echo "VAGRANT_VAGRANTFILE   default: ./configuration/Vagrantfile.unicycle  actual: ${VAGRANT_VAGRANTFILE}"
 	@echo "HZN_ORG_ID            default: myorg                                 actual: ${HZN_ORG_ID}"
 	@echo "OS                    default: unknown                               actual: ${OS}"
@@ -26,10 +29,15 @@ stop:
 init: up
 
 up:
-	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up | tee summary.txt
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant up | tee summary.txt
 	@tail -n 2 summary.txt | cut -c 16- >> ~/.bashrc
 	@tail -n 2 summary.txt | cut -c 16- > mycreds.env
-	@source mycreds.env
+	@$(source mycreds.env)
+	@envsubst < $(VAGRANT_TEMPLATE) > $(VAGRANT_VAGRANTFILE)
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up
+	@rm summary.txt
+	@rm mycreds.env
+	@rm $(VAGRANT_VAGRANTFILE)
 
 connect:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh
