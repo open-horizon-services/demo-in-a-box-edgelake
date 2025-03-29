@@ -1,7 +1,12 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/jammy64"
+  config.vm.hostname = "exchange"
   config.vm.disk :disk, size: "50GB", primary: true
-  config.vm.network "public_network", bridge: "en0: Wi-Fi"
+  config.vm.network :private_network, ip: "192.168.56.10"
+  config.vm.network "forwarded_port", guest: 3090, host: 3090, auto_correct: true
+  config.vm.network "forwarded_port", guest: 3111, host: 3111, auto_correct: true
+  config.vm.network "forwarded_port", guest: 9008, host: 9008, auto_correct: true
+  config.vm.network "forwarded_port", guest: 9443, host: 9443, auto_correct: true
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "4096"
   end
@@ -9,9 +14,13 @@ Vagrant.configure("2") do |config|
     apt-get -y update
     apt-get -y upgrade
     apt-get install -y gcc make git curl jq net-tools docker.io
+    ufw allow 3090/tcp
+    ufw allow 3111/tcp
+    ufw allow 9008/tcp
+    ufw allow 9443/tcp
     # export HZN_TRANSPORT=https
     # export BAO_DISABLE_TLS=false
-    export HZN_LISTEN_IP=10.0.2.15
+    export HZN_LISTEN_IP=192.168.56.10
     export CSS_IMAGE_TAG=1.10.1-1577
     export MONGO_IMAGE_TAG=4.0.6
     curl -sSL https://raw.githubusercontent.com/open-horizon/devops/master/mgmt-hub/deploy-mgmt-hub.sh | bash -s --

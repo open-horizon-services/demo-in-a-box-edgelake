@@ -47,6 +47,11 @@ status:
 
 down: destroy
 
+clean:
+	@rm summary.txt
+	@rm mycreds.env
+	@rm $(VAGRANT_VAGRANTFILE)
+
 destroy:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant destroy -f
 
@@ -57,4 +62,4 @@ else
 	@xdg-open http://127.0.0.1:8123
 endif
 
-.PHONY: default check stop init up status down destroy browse connect
+.PHONY: default check stop init up status down destroy browse connect clean
