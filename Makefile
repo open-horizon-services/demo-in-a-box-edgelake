@@ -13,31 +13,34 @@ OS := $(shell uname -s)
 default: status
 
 check:
-	@echo "====================="
-	@echo "ENVIRONMENT VARIABLES"
-	@echo "====================="
-	@echo "SYSTEM_CONFIGURATION  default: unicycle                              actual: ${SYSTEM_CONFIGURATION}"
-	@echo "VAGRANT_TEMPLATE      default: Vagrantfile.unicycle.template         actual: ${VAGRANT_TEMPLATE}"
-	@echo "VAGRANT_VAGRANTFILE   default: ./configuration/Vagrantfile.unicycle  actual: ${VAGRANT_VAGRANTFILE}"
-	@echo "HZN_ORG_ID            default: myorg                                 actual: ${HZN_ORG_ID}"
-	@echo "OS                    default: unknown                               actual: ${OS}"
+	@echo "=====================     ============================================="
+	@echo "ENVIRONMENT VARIABLES     VALUES"
+	@echo "=====================     ============================================="
+	@echo "SYSTEM_CONFIGURATION      ${SYSTEM_CONFIGURATION}"
+	@echo "VAGRANT_HUB               ${VAGRANT_HUB}"
+	@echo "VAGRANT_TEMPLATE          ${VAGRANT_TEMPLATE}"
+	@echo "VAGRANT_VAGRANTFILE       ${VAGRANT_VAGRANTFILE}"
+	@echo "HZN_ORG_ID                ${HZN_ORG_ID}"
+	@echo "OS                        ${OS}"
+	@echo "=====================     ============================================="
 	@echo ""
 
-stop:
-	@docker rm -f $(DOCKER_IMAGE_NAME) >/dev/null 2>&1 || :
+init: up-hub up
 
-init: up
-
-up:
+up-hub: 
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant up | tee summary.txt
-	@tail -n 2 summary.txt | cut -c 16- >> ~/.bashrc
 	@tail -n 2 summary.txt | cut -c 16- > mycreds.env
-	@$(source mycreds.env)
+	@rm summary.txt
+
+up: 
+	$(eval export HZN_EXCHANGE_USER_AUTH := $(shell source mycreds.env && echo $$HZN_EXCHANGE_USER_AUTH))
 	@envsubst < $(VAGRANT_TEMPLATE) > $(VAGRANT_VAGRANTFILE)
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up
-	@rm summary.txt
 	@rm mycreds.env
-	@rm $(VAGRANT_VAGRANTFILE)
+#	@rm $(VAGRANT_VAGRANTFILE)
+
+connect-hub:
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant ssh
 
 connect:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh
@@ -45,15 +48,19 @@ connect:
 status:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant status
 
-down: destroy
+status-hub:
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant status
+
+down: destroy destroy-hub clean
 
 clean:
-	@rm summary.txt
-	@rm mycreds.env
 	@rm $(VAGRANT_VAGRANTFILE)
 
 destroy:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant destroy -f
+
+destroy-hub:
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant destroy -f
 
 browse:
 ifeq ($(OS),Darwin)
@@ -62,4 +69,4 @@ else
 	@xdg-open http://127.0.0.1:8123
 endif
 
-.PHONY: default check stop init up status down destroy browse connect clean
+.PHONY: default check init up-hub up status down destroy browse connect clean connect-hub status-hub destroy-hub

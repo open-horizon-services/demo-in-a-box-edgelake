@@ -31,11 +31,49 @@ The `x86_64` architecture host can be configured one of four ways:
 Run `make check` to verify dependencies are installed and defaults are correct.
 Further, run `make status` to confirm that Vagrant is installed and running properly.
 
-Running `make up` will provision the "unicycle" system configuration.  To use any other configuration, first `export SYSTEM_CONFIGURATION=<system configuration string>` where `<system configuration string>` is one of "unicycle", "bicycle", "car", or "semi" _without the quotes_.
+Running `make init` will provision the default system configuration ("unicycle").  To use any other configuration, first `export SYSTEM_CONFIGURATION=<system configuration string>` where `<system configuration string>` is one of "unicycle", "bicycle", "car", or "semi" _without the quotes_.
 
 Running `make down` will de-provision the system and cannot be undone.  Make sure you really want to do this.
 
 ## Usage
+
+Run `make connect` to SSH to the first agent VM.  The credentials can be set by running `export $(cat agent-install.cfg)`.  To test that the installation is configured and working, run the following commands:
+
+```shell
+hzn version
+```
+
+This should return matching version numbers for both the CLI and the agent.
+
+```shell
+hzn node list
+```
+
+This will show the agent is running and the HelloWorld sample workload is configured and running.
+
+```shell
+hzn ex user ls
+```
+
+This will confirm that the CLI can connect to the exchange in the hub's VM, and that the credentials are valid.
+
+```shell
+hzn ex node ls
+```
+
+This will show all of the agents registered with the exchange in the hub VM.
+
+```shell
+exit
+```
+
+Will disconnect from the agent VM and end the SSH session.
+
+```shell
+make down
+```
+
+Will remove all of the VMs and delete temporary files.
 
 ## Advanced details
 
