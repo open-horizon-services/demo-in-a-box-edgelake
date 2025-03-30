@@ -8,6 +8,7 @@ You must have the following utilities installed in order to provision:
 
 * `make`
 * `vagrant`
+* `virtualbox`
 
 Additionally, this must be run on an `x86_64` architecture machine running a Debian-based OS such as Ubuntu.
 
@@ -28,10 +29,14 @@ The `x86_64` architecture host can be configured one of four ways:
 
 ## Installation
 
+Clone the repository, then `cd` into the repo folder.
+
 Run `make check` to verify dependencies are installed and defaults are correct.
 Further, run `make status` to confirm that Vagrant is installed and running properly.
 
 Running `make init` will provision the default system configuration ("unicycle").  To use any other configuration, first `export SYSTEM_CONFIGURATION=<system configuration string>` where `<system configuration string>` is one of "unicycle", "bicycle", "car", or "semi" _without the quotes_.
+
+If you only want the hub running in a VM with an agent, and not a separate agent in a VM, just run `make up-hub` instead of `make init`, but make sure you copy over the credentials from the "mycreds.env" file on the host.
 
 Running `make down` will de-provision the system and cannot be undone.  Make sure you really want to do this.
 

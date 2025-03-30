@@ -30,14 +30,13 @@ init: up-hub up
 up-hub: 
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant up | tee summary.txt
 	@tail -n 2 summary.txt | cut -c 16- > mycreds.env
-	@rm summary.txt
+	@if [ -f summary.txt ]; then rm summary.txt; fi
 
 up: 
 	$(eval export HZN_EXCHANGE_USER_AUTH := $(shell source mycreds.env && echo $$HZN_EXCHANGE_USER_AUTH))
 	@envsubst < $(VAGRANT_TEMPLATE) > $(VAGRANT_VAGRANTFILE)
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up
-	@rm mycreds.env
-#	@rm $(VAGRANT_VAGRANTFILE)
+	@if [ -f mycreds.env ]; then rm mycreds.env; fi
 
 connect-hub:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant ssh
@@ -54,7 +53,9 @@ status-hub:
 down: destroy destroy-hub clean
 
 clean:
-	@rm $(VAGRANT_VAGRANTFILE)
+	@if [ -f $(VAGRANT_VAGRANTFILE) ]; then rm $(VAGRANT_VAGRANTFILE); fi
+	@if [ -f summary.txt ]; then rm summary.txt; fi
+	@if [ -f mycreds.env ]; then rm mycreds.env; fi
 
 destroy:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant destroy -f
