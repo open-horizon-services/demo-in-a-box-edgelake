@@ -1,6 +1,8 @@
 # The Open Horizon organization ID namespace where you will be publishing files
 export HZN_ORG_ID ?= myorg
 
+VMNAME :=
+
 # Which system configuration to be provisioned
 export SYSTEM_CONFIGURATION ?= unicycle
 export VAGRANT_HUB := "./configuration/Vagrantfile.hub"
@@ -33,16 +35,16 @@ up-hub:
 	@if [ -f summary.txt ]; then rm summary.txt; fi
 
 up: 
-	$(eval export HZN_EXCHANGE_USER_AUTH := $(shell source mycreds.env && echo $$HZN_EXCHANGE_USER_AUTH))
+	$(eval include ./mycreds.env)
 	@envsubst < $(VAGRANT_TEMPLATE) > $(VAGRANT_VAGRANTFILE)
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up
-	@if [ -f mycreds.env ]; then rm mycreds.env; fi
+#	@if [ -f mycreds.env ]; then rm mycreds.env; fi
 
 connect-hub:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant ssh
 
 connect:
-	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh $(VMNAME)
 
 status:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant status

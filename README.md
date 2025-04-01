@@ -16,7 +16,9 @@ Additionally, this must be run on an `x86_64` architecture machine running a Deb
 
 The `x86_64` architecture host can be configured one of four ways:
 
-- Unicycle -- As a single logical machine running the Exchange and an Agent
+- Unicycle -- As two VMs, with
+  - the primary running the Exchange and an Agent using 1/2 of the available resources, and
+  - the remaining VM running an Agent also using 1/2 of the available resources.
 - Bicycle -- As three VMs, with
   - the primary running the Exchange and an Agent using 1/2 of the available resources, and
   - the remaining two running Agents each using 1/4 of the available resources.
@@ -34,7 +36,7 @@ Clone the repository, then `cd` into the repo folder.
 Run `make check` to verify dependencies are installed and defaults are correct.
 Further, run `make status` to confirm that Vagrant is installed and running properly.
 
-Running `make init` will provision the default system configuration ("unicycle").  To use any other configuration, first `export SYSTEM_CONFIGURATION=<system configuration string>` where `<system configuration string>` is one of "unicycle", "bicycle", "car", or "semi" _without the quotes_.
+Running `make init` will provision the default system configuration ("unicycle").  To use any other configuration, first `export SYSTEM_CONFIGURATION=<system configuration string>` where `<system configuration string>` is one of "unicycle", "bicycle", "car", or "semi" _without the quotes_.  Installation should take between 30 minutes for _unicycle_ to an hour for _semi_.
 
 If you only want the hub running in a VM with an agent, and not a separate agent in a VM, just run `make up-hub` instead of `make init`, but make sure you copy over the credentials from the "mycreds.env" file on the host.
 
@@ -42,7 +44,7 @@ Running `make down` will de-provision the system and cannot be undone.  Make sur
 
 ## Usage
 
-Run `make connect` to SSH to the first agent VM.  The credentials can be set by running `export $(cat agent-install.cfg)`.  To test that the installation is configured and working, run the following commands:
+Run `make connect` to SSH to the first agent VM in _unicycle_ configuration.  For all other configurations, specify the "VMNAME" as an argument: `make connect VMNAME=agent3`.  The credentials can be set by running `export $(cat agent-install.cfg)`.  To test that the installation is configured and working, run the following commands:
 
 ```shell
 hzn version
