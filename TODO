@@ -1,0 +1,4 @@
+1. add EdgeLake - Operator + Generic (only)
+2. add PostgresSQL
+3. Integrate EdgeLake + psql
+4. Remote-CLI (?)
