@@ -21,15 +21,15 @@ ifeq ($(ARCH),aarch64 arm64)
 	DOCKER_IMAGE_VERSION := 1.3.2504-arm64
 endif
 ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
-	export NODE_NAME := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}'| sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
-	export ANYLOG_SERVER_PORT := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_SERVER_PORT | awk -F "=" '{print $$2}')
-	export ANYLOG_REST_PORT := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_REST_PORT | awk -F "=" '{print $$2}')
-	export ANYLOG_BROKER_PORT := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_BROKER_PORT | awk -F "=" '{print $$2}' | grep -v '^$$')
-	export REMOTE_CLI := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep REMOTE_CLI | awk -F "=" '{print $$2}')
-	export ENABLE_NEBULA := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ENABLE_NEBULA | awk -F "=" '{print $$2}')
-	export DOCKER_IMAGE_BASE ?= $(shell cat ../edgelake/configurations/.env | grep IMAGE | awk -F "=" '{print $$2}')
-	export IMAGE_ORG ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 1)
-	export IMAGE_NAME ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 2)
+	export NODE_NAME := $(shell cat edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}' | sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+	export ANYLOG_SERVER_PORT := $(shell cat edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_SERVER_PORT | awk -F "=" '{print $$2}')
+	export ANYLOG_REST_PORT := $(shell cat edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_REST_PORT | awk -F "=" '{print $$2}')
+	export ANYLOG_BROKER_PORT := $(shell cat edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_BROKER_PORT | awk -F "=" '{print $$2}' | grep -v '^$$')
+	export REMOTE_CLI := $(shell cat edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep REMOTE_CLI | awk -F "=" '{print $$2}')
+	export ENABLE_NEBULA := $(shell cat edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ENABLE_NEBULA | awk -F "=" '{print $$2}')
+	export DOCKER_IMAGE_BASE ?= $(shell cat edgelake/configurations/.env | grep IMAGE | awk -F "=" '{print $$2}')
+	export IMAGE_ORG ?= $(shell echo $(DOCKER_IMAGE_BASE) | cut -d '/' -f 1)
+	export IMAGE_NAME ?= $(shell echo $(DOCKER_IMAGE_BASE) | cut -d '/' -f 2)
 endif
 
 export CONTAINER_CMD := $(shell if command -v podman >/dev/null 2>&1; then echo "podman"; else echo "docker"; fi)
@@ -42,7 +42,7 @@ all: help
 #  										   OpenHorizon related commands											   	   #
 #======================================================================================================================#
 prep-service: ## prepare `service.deployment.json` file using python / python3
-	@$(PYTHON_CMD) ../edgelake/create_policy.py $(SERVICE_VERSION) ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env
+	@$(PYTHON_CMD) edgelake/create_policy.py $(SERVICE_VERSION) edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env
 full-deploy: publish-service publish-service-policy  publish-deployment-policy agent-run ## deploy all services and policies, then start agent
 deploy: publish-deployment-policy agent-run ## publish deployment and run agent
 publish: publish-service publish-service-policy publish-deployment-policy ## publish services and policies
@@ -52,19 +52,19 @@ publish-service: ## publish service
 	@echo "PUBLISHING SERVICE"
 	@echo "=================="
 	@#hzn exchange service publish -O -P --json-file=service.definition.json
-	@hzn exchange service publish --org=${HZN_ORG_ID} --user-pw=${HZN_EXCHANGE_USER_AUTH} -O -P --json-file=service.definition.json
+	@hzn exchange service publish --org=${HZN_ORG_ID} --user-pw=${HZN_EXCHANGE_USER_AUTH} -O -P --json-file=edgelake/service.definition.json
 publish-service-policy: ##  public service policy
 	@echo "========================="
 	@echo "PUBLISHING SERVICE POLICY"
 	@echo "========================="
 	# @hzn exchange service addpolicy -f service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
-	@hzn exchange service addpolicy --org=${HZN_ORG_ID} --user-pw=${HZN_EXCHANGE_USER_AUTH} -f service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
+	@hzn exchange service addpolicy --org=${HZN_ORG_ID} --user-pw=${HZN_EXCHANGE_USER_AUTH} -f edgelake/service.policy.json $(HZN_ORG_ID)/$(SERVICE_NAME)_$(SERVICE_VERSION)_$(ARCH)
 publish-deployment-policy: prep-service ## publish deployment policy
 	@echo "============================"
 	@echo "PUBLISHING DEPLOYMENT POLICY"
 	@echo "============================"
 	# @hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
-	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f service.deployment.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f edgelake/service.deployment.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
 agent-run: ## start agent
 	@echo "================"
 	@echo "REGISTERING NODE"
@@ -83,7 +83,7 @@ hzn-agreement-list: ## check agreement list
 hzn-logs: ## logs for Docker container when running in OpenHorizon
 	@$(CONTAINER_CMD) logs $(CONTAINER_ID)
 deploy-check: ## check deployment
-	@hzn deploycheck all -t device -B service.deployment.json --service=service.definition.json --service-pol=service.policy.json --node-pol=node.policy.json
+	@hzn deploycheck all -t device -B edgelake/service.deployment.json --service=edgelake/service.definition.json --service-pol=edgelake/service.policy.json --node-pol=edgelake/node.policy.json
 
 #======================================================================================================================#
 #  											Testing / Help related commands											   #
