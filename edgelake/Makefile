@@ -21,27 +21,18 @@ ifeq ($(ARCH),aarch64 arm64)
 	DOCKER_IMAGE_VERSION := 1.3.2504-arm64
 endif
 ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
-	export NODE_NAME := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}'| sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
-	export ANYLOG_SERVER_PORT := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_SERVER_PORT | awk -F "=" '{print $$2}')
-	export ANYLOG_REST_PORT := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_REST_PORT | awk -F "=" '{print $$2}')
-	export ANYLOG_BROKER_PORT := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_BROKER_PORT | awk -F "=" '{print $$2}' | grep -v '^$$')
-	export REMOTE_CLI := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep REMOTE_CLI | awk -F "=" '{print $$2}')
-	export ENABLE_NEBULA := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep ENABLE_NEBULA | awk -F "=" '{print $$2}')
-	export DOCKER_IMAGE_BASE ?= $(shell cat configurations/.env | grep IMAGE | awk -F "=" '{print $$2}')
+	export NODE_NAME := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}'| sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+	export ANYLOG_SERVER_PORT := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_SERVER_PORT | awk -F "=" '{print $$2}')
+	export ANYLOG_REST_PORT := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_REST_PORT | awk -F "=" '{print $$2}')
+	export ANYLOG_BROKER_PORT := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_BROKER_PORT | awk -F "=" '{print $$2}' | grep -v '^$$')
+	export REMOTE_CLI := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep REMOTE_CLI | awk -F "=" '{print $$2}')
+	export ENABLE_NEBULA := $(shell cat ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep ENABLE_NEBULA | awk -F "=" '{print $$2}')
+	export DOCKER_IMAGE_BASE ?= $(shell cat ../edgelake/configurations/.env | grep IMAGE | awk -F "=" '{print $$2}')
 	export IMAGE_ORG ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 1)
 	export IMAGE_NAME ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 2)
 endif
 
-ifeq ($(OS),Linux)
-	export DOCKER_COMPOSE_TEMPLATE := configurations/docker-compose-template-base.yaml
-else
-	export DOCKER_COMPOSE_TEMPLATE := configurations/docker-compose-template-ports-base.yaml
-endif
-
 export CONTAINER_CMD := $(shell if command -v podman >/dev/null 2>&1; then echo "podman"; else echo "docker"; fi)
-
-export DOCKER_COMPOSE_CMD := $(shell if command -v podman-compose >/dev/null 2>&1; then echo "podman-compose"; \
-	elif command -v docker-compose >/dev/null 2>&1; then echo "docker-compose"; else echo "docker compose"; fi)
 
 export PYTHON_CMD := $(shell if command -v python >/dev/null 2>&1; then echo "python"; \
 	elif command -v python3 >/dev/null 2>&1; then echo "python3"; fi)
@@ -51,7 +42,7 @@ all: help
 #  										   OpenHorizon related commands											   	   #
 #======================================================================================================================#
 prep-service: ## prepare `service.deployment.json` file using python / python3
-	@$(PYTHON_CMD) create_policy.py $(SERVICE_VERSION) configurations/edgelake_${EDGELAKE_TYPE}.env
+	@$(PYTHON_CMD) create_policy.py $(SERVICE_VERSION) ../edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env
 full-deploy: publish-service publish-service-policy  publish-deployment-policy agent-run ## deploy all services and policies, then start agent
 deploy: publish-deployment-policy agent-run ## publish deployment and run agent
 publish: publish-service publish-service-policy publish-deployment-policy ## publish services and policies
