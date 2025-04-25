@@ -1,0 +1,8 @@
+{
+    "HZN_ORG_ID": "examples",
+    "MetadataVars": {
+        "POSTGRES_USER": "",
+        "POSTGRES_PASSWORD": "",
+        "POSTGRES_DB": ""
+    }
+}

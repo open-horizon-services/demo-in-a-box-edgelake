@@ -1,0 +1,51 @@
+{
+  "label": "$SERVICE_NAME Deployment Policy",      
+  "description": "Policy to auto deploy $SERVICE_NAME",
+  "service": {       
+    "name": "$SERVICE_NAME",
+    "org": "$HZN_ORG_ID",    
+    "arch": "$ARCH",    
+    "serviceVersions": [ 
+      {
+        "version": "$SERVICE_VERSION",
+        "priority":{}
+      }
+    ]
+  },
+  "properties": [
+  ],
+  "constraints": [ 
+        "purpose == storage"
+  ], 
+  "userInput": [ 
+    {            
+      "serviceOrgid": "$HZN_ORG_ID",
+      "serviceUrl": "$SERVICE_NAME",
+      "serviceVersionRange": "[0.0.0,INFINITY)",
+      "inputs": [
+        {"name":"POSTGRES_PASSWORD_FILE","value":"/open-horizon-secrets/secret_password"},
+        {"name":"POSTGRES_USER_FILE","value":"/open-horizon-secrets/secret_user"},
+        {"name":"POSTGRES_DB_FILE","value":"/open-horizon-secrets/secret_db"}
+      ]
+    }
+  ],
+  "secretBinding": [
+    {
+      "serviceUrl": "$SERVICE_NAME",
+      "serviceOrgid": "$HZN_ORG_ID",
+      "serviceVersionRange": "[0.0.0,INFINITY)",
+      "enableNodeLevelSecrets": false,
+      "secrets": [
+        {
+          "secret_user": "secret_user"
+        },
+        {
+          "secret_password": "secret_password"
+        },
+        {
+          "secret_db": "secret_db"
+        }
+      ]
+    }
+  ]
+}  
