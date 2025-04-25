@@ -14,6 +14,26 @@ OS := $(shell uname -s)
 
 default: status
 
+# Redirect to edgelake/Makefile if EDGELAKE_TYPE or TEST_CONN are set
+ifeq ($(origin EDGELAKE_TYPE),command line)
+FORWARD_ARGS := EDGELAKE_TYPE=$(EDGELAKE_TYPE)
+else ifeq ($(origin TEST_CONN),command line)
+FORWARD_ARGS := TEST_CONN=$(TEST_CONN)
+endif
+
+ifeq ($(origin FORWARD_ARGS),undefined)
+# No forwarding, proceed with regular targets
+else
+FORWARD_TARGETS := $(filter-out $(FORWARD_ARGS),$(MAKECMDGOALS))
+
+# Forwarding rule hijacks all targets if forwarding args are present
+$(MAKECMDGOALS): forward
+
+forward:
+	@$(MAKE) -f edgelake/Makefile $(FORWARD_TARGETS) $(FORWARD_ARGS)
+endif
+
+
 check:
 	@echo "=====================     ============================================="
 	@echo "ENVIRONMENT VARIABLES     VALUES"
@@ -29,12 +49,12 @@ check:
 
 init: up-hub up
 
-up-hub: 
+up-hub:
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant up | tee summary.txt
 	@tail -n 2 summary.txt | cut -c 16- > mycreds.env
 	@if [ -f summary.txt ]; then rm summary.txt; fi
 
-up: 
+up:
 	$(eval include ./mycreds.env)
 	@envsubst < $(VAGRANT_TEMPLATE) > $(VAGRANT_VAGRANTFILE)
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up
@@ -72,4 +92,4 @@ else
 	@xdg-open http://127.0.0.1:8123
 endif
 
-.PHONY: default check init up-hub up status down destroy browse connect clean connect-hub status-hub destroy-hub
+.PHONY: default check init up-hub up status down destroy browse connect clean connect-hub status-hub destroy-hub forward
