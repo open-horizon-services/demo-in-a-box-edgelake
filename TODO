@@ -1,4 +1,9 @@
 1. add EdgeLake - Operator + Generic (only)
+"""
+make full-deploy EDGELAKE_TYPE=generic
+make test-node TEST_CONN=74.207.232.77:32549
+"""
+
 2. add PostgresSQL
 3. Integrate EdgeLake + psql
 4. Remote-CLI (?)
