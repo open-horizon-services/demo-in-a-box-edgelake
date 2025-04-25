@@ -5,5 +5,26 @@ make test-node TEST_CONN=74.207.232.77:32549
 """
 
 2. add PostgresSQL
+"""
+make run RUN_POSTGRES=true
+"""
+
 3. Integrate EdgeLake + psql
-4. Remote-CLI (?)
+Phase 1: deploy both
+* set postgres configs
+* publish postgres configs
+    --> publish-service
+    --> publish-deployment-policy
+"""
+make publish RUN_POSTGRES=true
+"""
+* run edgelake - this should also start postgres
+    --> publish-service
+    --> publish-service-policy
+    --> publish-deployment-policy
+    --> agent-run
+"""
+make full-deploy EDGELAKE_TYPE=generic
+"""
+
+Phase 2: connect them
