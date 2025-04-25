@@ -70,7 +70,7 @@ agent-run: ## start agent
 	@echo "REGISTERING NODE"
 	@echo "================"
 	@#hzn register --policy=node.policy.json
-	@hzn register --name=hzn-client --policy=node.policy.json
+	@hzn register --name=hzn-client --policy=edgelake/node.policy.json
 	@watch $(MAKE) hzn-agreement-list #w atch agreement list
 hzn-clean: ## unregister agent(s) from OpenHorizon
 	@echo "==================="
