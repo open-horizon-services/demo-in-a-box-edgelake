@@ -19,19 +19,24 @@ ifeq ($(origin EDGELAKE_TYPE),command line)
 FORWARD_ARGS := EDGELAKE_TYPE=$(EDGELAKE_TYPE)
 else ifeq ($(origin TEST_CONN),command line)
 FORWARD_ARGS := TEST_CONN=$(TEST_CONN)
+else ifeq ($(RUN_POSTGRES),true)
+FORWARD_ARGS :=
+FORWARD_MAKEFILE := postgresql/Makefile
 endif
 
-ifeq ($(origin FORWARD_ARGS),undefined)
+
+ifeq ($(origin FORWARD_MAKEFILE),undefined)
 # No forwarding, proceed with regular targets
 else
 FORWARD_TARGETS := $(filter-out $(FORWARD_ARGS),$(MAKECMDGOALS))
 
-# Forwarding rule hijacks all targets if forwarding args are present
+# Forwarding rule hijacks all targets if forwarding conditions are met
 $(MAKECMDGOALS): forward
 
 forward:
-	@$(MAKE) -f edgelake/Makefile $(FORWARD_TARGETS) $(FORWARD_ARGS)
+	@$(MAKE) -f $(FORWARD_MAKEFILE) $(FORWARD_TARGETS) $(FORWARD_ARGS)
 endif
+
 
 
 check:
