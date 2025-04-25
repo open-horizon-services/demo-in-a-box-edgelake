@@ -21,21 +21,21 @@ ifeq ($(ARCH),aarch64 arm64)
 	DOCKER_IMAGE_VERSION := 1.3.2504-arm64
 endif
 ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
-	export NODE_NAME := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}'| sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
-	export ANYLOG_SERVER_PORT := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_SERVER_PORT | awk -F "=" '{print $$2}')
-	export ANYLOG_REST_PORT := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_REST_PORT | awk -F "=" '{print $$2}')
-	export ANYLOG_BROKER_PORT := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_BROKER_PORT | awk -F "=" '{print $$2}' | grep -v '^$$')
-	export REMOTE_CLI := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep REMOTE_CLI | awk -F "=" '{print $$2}')
-	export ENABLE_NEBULA := $(shell cat docker-makefiles/edgelake_${EDGELAKE_TYPE}.env | grep ENABLE_NEBULA | awk -F "=" '{print $$2}')
-	export DOCKER_IMAGE_BASE ?= $(shell cat docker-makefiles/.env | grep IMAGE | awk -F "=" '{print $$2}')
+	export NODE_NAME := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}'| sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+	export ANYLOG_SERVER_PORT := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_SERVER_PORT | awk -F "=" '{print $$2}')
+	export ANYLOG_REST_PORT := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_REST_PORT | awk -F "=" '{print $$2}')
+	export ANYLOG_BROKER_PORT := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep ANYLOG_BROKER_PORT | awk -F "=" '{print $$2}' | grep -v '^$$')
+	export REMOTE_CLI := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep REMOTE_CLI | awk -F "=" '{print $$2}')
+	export ENABLE_NEBULA := $(shell cat configurations/edgelake_${EDGELAKE_TYPE}.env | grep ENABLE_NEBULA | awk -F "=" '{print $$2}')
+	export DOCKER_IMAGE_BASE ?= $(shell cat configurations/.env | grep IMAGE | awk -F "=" '{print $$2}')
 	export IMAGE_ORG ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 1)
 	export IMAGE_NAME ?= $(shell echo $(DOCKER_IMAGE_BASE) |  cut -d '/' -f 2)
 endif
 
 ifeq ($(OS),Linux)
-	export DOCKER_COMPOSE_TEMPLATE := docker-makefiles/docker-compose-template-base.yaml
+	export DOCKER_COMPOSE_TEMPLATE := configurations/docker-compose-template-base.yaml
 else
-	export DOCKER_COMPOSE_TEMPLATE := docker-makefiles/docker-compose-template-ports-base.yaml
+	export DOCKER_COMPOSE_TEMPLATE := configurations/docker-compose-template-ports-base.yaml
 endif
 
 export CONTAINER_CMD := $(shell if command -v podman >/dev/null 2>&1; then echo "podman"; else echo "docker"; fi)
@@ -48,61 +48,10 @@ export PYTHON_CMD := $(shell if command -v python >/dev/null 2>&1; then echo "py
 
 all: help
 #======================================================================================================================#
-#  											Docker related commands													   #
-#======================================================================================================================#
-generate-docker-compose:
-	@bash docker-makefiles/update_docker_compose.sh
-	@NODE_NAME="$(NODE_NAME)" ANYLOG_SERVER_PORT=${ANYLOG_SERVER_PORT} ANYLOG_REST_PORT=${ANYLOG_REST_PORT} ANYLOG_BROKER_PORT=${ANYLOG_BROKER_PORT} \
-	REMOTE_CLI=$(REMOTE_CLI) ENABLE_NEBULA=$(ENABLE_NEBULA) \
-	envsubst < docker-makefiles/docker-compose-template.yaml > docker-makefiles/docker-compose.yaml
-build: ## pull image from the docker hub repository
-	$(CONTAINER_CMD) pull docker.io/anylogco/edgelake:$(DOCKER_IMAGE_VERSION)
-dry-run: generate-docker-compose ## create docker-compose.yaml file based on the .env configuration file(s)
-	@echo "========================="
-	@echo "Dry Run $(EDGELAKE_TYPE)"
-	@echo "========================="
-up: ## start EdgeLake instance
-	@echo "========================="
-	@echo "Deploy EdgeLake $(EDGELAKE_TYPE)"
-	@echo "========================="
-	@$(MAKE) generate-docker-compose
-	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml up -d
-	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
-down: ## Stop EdgeLAke instance
-	@echo "Stop EdgeLake $(EDGELAKE_TYPE)"
-	@echo "========================="
-	@echo "Stop EdgeLake $(EDGELAKE_TYPE)"
-	@echo "========================="
-	@$(MAKE) generate-docker-compose
-	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down
-	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
-clean-vols: ## Stop & remove volumes for EdgeLAke instance
-	@echo
-	@echo "==============================================="
-	@echo "Stop + remove volumes for EdgeLake $(EDGELAKE_TYPE)"
-	@echo "==============================================="
-	@$(MAKE) generate-docker-compose
-	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down -v
-	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
-clean: ## Stop AnyLog instance and remove associated volumes & image
-	@echo "=================================================="
-	@echo "Stop EdgeLake $(EDGELAKE_TYPE) & Remove Volumes and Images"
-	@echo "=================================================="
-	@$(MAKE) generate-docker-compose
-	@$(DOCKER_COMPOSE_CMD) -f docker-makefiles/docker-compose.yaml down --volumes --rmi all
-	@rm -f docker-makefiles/docker-compose.yaml docker-makefiles/docker-compose-template.yaml
-attach: ## Attach to docker / podman container (use ctrl-d to detach)
-	@$(CONTAINER_CMD) attach --detach-keys=ctrl-d $(NODE_NAME)
-exec: ## Attach to the shell executable for the container
-	@$(CONTAINER_CMD) exec -it $(NODE_NAME) /bin/bash
-logs: ## View container logs
-	@$(CONTAINER_CMD) logs $(NODE_NAME)
-
-#======================================================================================================================#
 #  										   OpenHorizon related commands											   	   #
 #======================================================================================================================#
 prep-service: ## prepare `service.deployment.json` file using python / python3
-	@$(PYTHON_CMD) create_policy.py $(SERVICE_VERSION) docker-makefiles/edgelake_${EDGELAKE_TYPE}.env
+	@$(PYTHON_CMD) create_policy.py $(SERVICE_VERSION) configurations/edgelake_${EDGELAKE_TYPE}.env
 full-deploy: publish-service publish-service-policy  publish-deployment-policy agent-run ## deploy all services and policies, then start agent
 deploy: publish-deployment-policy agent-run ## publish deployment and run agent
 publish: publish-service publish-service-policy publish-deployment-policy ## publish services and policies
