@@ -28,6 +28,9 @@ FORWARD_MAKEFILE := edgelake/Makefile
 else ifeq ($(RUN_POSTGRES),true)
 FORWARD_ARGS :=
 FORWARD_MAKEFILE := postgresql/Makefile
+elif ifeq ($(RUN_GRAFANA),true)
+FORWARD_ARGS :=
+FORWARD_MAKEFILE := grafana/Makefile
 endif
 
 ifeq ($(origin FORWARD_MAKEFILE),undefined)
