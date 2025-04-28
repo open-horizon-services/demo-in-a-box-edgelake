@@ -167,7 +167,7 @@ grafana-publish-deployment-policy: grafana-prep-service ## publish deployment po
 	@echo "PUBLISHING DEPLOYMENT POLICY"
 	@echo "============================"
 	# @hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
-	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f grafana/service.deployment.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f grafana/deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
 grafana-check: ## check Grafana variables
 	@echo "====================="
 	@echo "ENVIRONMENT VARIABLES"
@@ -215,7 +215,7 @@ psql-publish-deployment-policy: psql-prep-service ## publish deployment policy
 	@echo "PUBLISHING DEPLOYMENT POLICY"
 	@echo "============================"
 	# @hzn exchange deployment addpolicy -f deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
-	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f postgresql/service.deployment.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	@hzn exchange deployment addpolicy --org=$(HZN_ORG_ID) --user-pw=$(HZN_EXCHANGE_USER_AUTH) -f postgresql/deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
 
 psql-check: ## PostgresSQL variable check
 	@echo "====================="
