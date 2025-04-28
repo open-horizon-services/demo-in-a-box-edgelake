@@ -11,32 +11,31 @@
     "requiredServices": [],
     "userInput": [
         {
-			"name": "POSTGRES_PASSWORD_FILE",
-			"label": "Password file",
-			"type": "string",
-			"defaultValue": "/open-horizon-secrets/SecretName"
-		},
+                        "name": "POSTGRES_PASSWORD",
+                        "label": "Password file",
+                        "type": "string",
+                        "defaultValue": "postgres4AnyLog!"
+                },
         {
-			"name": "POSTGRES_USER_FILE",
-			"label": "Username file",
-			"type": "string",
-			"defaultValue": "/open-horizon-secrets/SecretName"
-		},
+                        "name": "POSTGRES_USER",
+                        "label": "Username file",
+                        "type": "string",
+                        "defaultValue": "postgres"
+                },
         {
-			"name": "POSTGRES_DB_FILE",
-			"label": "Database Name file",
-			"type": "string",
-			"defaultValue": "/open-horizon-secrets/SecretName"
-		}
+                        "name": "POSTGRES_DB",
+                        "label": "Database Name file",
+                        "type": "string",
+                        "defaultValue": "new_company"
+                }
     ],
     "deployment": {
         "services": {
             "$SERVICE_NAME": {
                 "image": "postgres:17.4",
                 "privileged": false,
-                "ports": [{"HostPort":"5432:5432"}],
-                "binds":["/db-data/:/var/lib/postgresql/data/:rw"],
-                "secrets": {"secret_user":{},"secret_password":{},"secret_db":{}}
+                "ports": [{"HostPort":"54322:54322"}],
+                "binds":["/db-data/:/var/lib/postgresql/data/:rw"]
             }
         }
     }

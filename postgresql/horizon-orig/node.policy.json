@@ -1,0 +1,13 @@
+{
+    "properties": [],
+	"constraints": [],
+	"deployment": {
+		"properties": [
+			{
+				"name": "purpose",
+				"value": "storage"
+			}
+		],
+		"constraints": []
+	}
+}  
