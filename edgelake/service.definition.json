@@ -8,7 +8,8 @@
 	"arch": "$ARCH",
 	"public": true,
 	"sharable": "singleton",
-	"requiredServices": [],
+	"requiredServices": [
+	],
 	"userInput": [
 		{
 			"name": "ANYLOG_PATH",

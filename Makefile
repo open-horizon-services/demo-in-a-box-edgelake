@@ -14,29 +14,34 @@ OS := $(shell uname -s)
 
 default: status
 
+# Special case: agent-run must NOT forward, it runs directly
+agent-run:
+	@hzn register --name=hzn-client --policy=node.policy.json
+
 # Redirect to edgelake/Makefile if EDGELAKE_TYPE or TEST_CONN are set
 ifeq ($(origin EDGELAKE_TYPE),command line)
 FORWARD_ARGS := EDGELAKE_TYPE=$(EDGELAKE_TYPE)
+FORWARD_MAKEFILE := edgelake/Makefile
 else ifeq ($(origin TEST_CONN),command line)
 FORWARD_ARGS := TEST_CONN=$(TEST_CONN)
+FORWARD_MAKEFILE := edgelake/Makefile
 else ifeq ($(RUN_POSTGRES),true)
 FORWARD_ARGS :=
 FORWARD_MAKEFILE := postgresql/Makefile
 endif
-
 
 ifeq ($(origin FORWARD_MAKEFILE),undefined)
 # No forwarding, proceed with regular targets
 else
 FORWARD_TARGETS := $(filter-out $(FORWARD_ARGS),$(MAKECMDGOALS))
 
-# Forwarding rule hijacks all targets if forwarding conditions are met
-$(MAKECMDGOALS): forward
+# Forwarding rule hijacks all targets if forwarding conditions are met,
+# except if the target is 'agent-run' which has its own rule
+$(filter-out agent-run,$(MAKECMDGOALS)): forward
 
 forward:
 	@$(MAKE) -f $(FORWARD_MAKEFILE) $(FORWARD_TARGETS) $(FORWARD_ARGS)
 endif
-
 
 
 check:
