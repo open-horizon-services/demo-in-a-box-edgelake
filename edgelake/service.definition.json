@@ -8,9 +8,12 @@
 	"arch": "$ARCH",
 	"public": true,
 	"sharable": "singleton",
-	"requiredServices": [
-		
-	],
+	"requiredServices": [{
+		"url": "service-grafana",
+		"org": "$$HZN_ORG_ID",
+		"versionRange": "[0.0.0,INFINITY)",
+		"arch": "$ARCH"
+	}],
 	"userInput": [
 		{
 			"name": "ANYLOG_PATH",
