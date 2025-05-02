@@ -89,7 +89,7 @@ publish-service:
 	@echo "=================="
 	@echo "PUBLISHING SERVICE"
 	@echo "=================="
-	@hzn exchange service publish -O -P --json-file=postgresql/horizon/service.definition.json
+	@hzn exchange service publish -O -P --json-file=horizon/service.definition.json
 	@echo ""
 
 remove-service:
@@ -103,7 +103,7 @@ publish-deployment-policy:
 	@echo "============================"
 	@echo "PUBLISHING DEPLOYMENT POLICY"
 	@echo "============================"
-	@hzn exchange deployment addpolicy -f postgresql/horizon/deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
+	@hzn exchange deployment addpolicy -f horizon/deployment.policy.json $(HZN_ORG_ID)/policy-$(SERVICE_NAME)_$(SERVICE_VERSION)
 	@echo ""
 
 remove-deployment-policy:
@@ -117,7 +117,7 @@ agent-run:
 	@echo "================"
 	@echo "REGISTERING NODE"
 	@echo "================"
-	@hzn register --policy=postgresql/horizon/node.policy.json
+	@hzn register --policy=horizon/node.policy.json
 	@watch hzn agreement list
 
 agent-stop:
@@ -128,7 +128,7 @@ agent-stop:
 	@echo ""
 
 deploy-check:
-	@hzn deploycheck all -t device -B postgresql/horizon/deployment.policy.json --service=postgresql/horizon/service.definition.json --node-pol=postgresql/horizon/node.policy.json
+	@hzn deploycheck all -t device -B horizon/deployment.policy.json --service=horizon/service.definition.json --node-pol=horizon/node.policy.json
 
 log:
 	@echo "========="
