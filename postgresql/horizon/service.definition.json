@@ -26,7 +26,7 @@
                         "name": "POSTGRES_DB",
                         "label": "Database Name file",
                         "type": "string",
-                        "defaultValue": "new_company"
+                        "defaultValue": "postgres"
                 }
     ],
     "deployment": {

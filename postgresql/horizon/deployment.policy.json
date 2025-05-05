@@ -25,7 +25,7 @@
       "inputs": [
         {"name":"POSTGRES_PASSWORD","value":"postgres4AnyLog!"},
         {"name":"POSTGRES_USER","value":"postgres"},
-        {"name":"POSTGRES_DB","value":"new_company"}
+        {"name":"POSTGRES_DB","value":"postgres"}
       ]
     }
   ]
