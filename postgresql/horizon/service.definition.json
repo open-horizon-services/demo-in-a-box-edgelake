@@ -34,7 +34,7 @@
             "$SERVICE_NAME": {
                 "image": "postgres:17.4",
                 "privileged": false,
-                "ports": [{"HostPort":"54322:54322"}],
+                "network": "host",
                 "binds":["/db-data/:/var/lib/postgresql/data/:rw"]
             }
         }

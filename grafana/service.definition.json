@@ -21,10 +21,8 @@
 		"services": {
 			"$SERVICE_NAME": {
 				"image": "$DOCKER_IMAGE_BASE:$DOCKER_IMAGE_VERSION",
-				"ports": [
-					{ "HostIP": "0.0.0.0", "HostPort": "3000:3000/tcp" }
-				],
-			        "binds": [
+				"network": "host",
+				"binds": [
 					"$DOCKER_VOLUME_NAME:/var/lib/grafana"
 				]
 			}
