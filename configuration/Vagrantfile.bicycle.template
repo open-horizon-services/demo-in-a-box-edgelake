@@ -3,6 +3,7 @@ Vagrant.configure("2") do |config|
       agent1.vm.box = "ubuntu/jammy64"
       agent1.vm.disk :disk, size: "20GB", primary: true
       agent1.vm.network :private_network, ip: "192.168.56.20"
+      agent1.vm.network :private_network, ip: "192.168.57.20"
       agent1.vm.provider "virtualbox" do |vb|
         vb.memory = "2048"
       end
@@ -26,7 +27,7 @@ Vagrant.configure("2") do |config|
       echo "HZN_FDO_SVC_URL=http://192.168.56.10:9008/api" >> agent-install.cfg
       curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | sudo bash -s -- -i anax: -k ./agent-install.cfg -c css: -p IBM/pattern-ibm.helloworld -w '*' -T 120
       export $(cat agent-install.cfg)
-      echo "{
+      echo '{
     "properties": [
                 {
                         "name": "openhorizon.allowPrivileged",
@@ -38,7 +39,7 @@ Vagrant.configure("2") do |config|
                 }
 ],
         "constraints": []
-}" > node.policy.json
+}' > node.policy.json
      hzn unregister -f
      hzn register --policy=node.policy.json
     SHELL
@@ -47,6 +48,7 @@ Vagrant.configure("2") do |config|
       agent2.vm.box = "ubuntu/jammy64"
       agent2.vm.disk :disk, size: "20GB", primary: true
       agent2.vm.network :private_network, ip: "192.168.56.30"
+      agent2.vm.network :private_network, ip: "192.168.57.30"
       agent2.vm.provider "virtualbox" do |vb|
         vb.memory = "2048"
       end
@@ -70,7 +72,7 @@ Vagrant.configure("2") do |config|
       echo "HZN_FDO_SVC_URL=http://192.168.56.10:9008/api" >> agent-install.cfg
       curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i anax: -k ./agent-install.cfg -c css: -p IBM/pattern-ibm.helloworld -w '*' -T 120
       export $(cat agent-install.cfg)
-      echo "{
+      echo '{
     "properties": [
                 {
                         "name": "openhorizon.allowPrivileged",
@@ -82,7 +84,7 @@ Vagrant.configure("2") do |config|
                 }
 ],
         "constraints": []
-}" > node.policy.json
+}' > node.policy.json
      hzn unregister -f
      hzn register --policy=node.policy.json
     SHELL
@@ -91,6 +93,7 @@ Vagrant.configure("2") do |config|
       agent3.vm.box = "ubuntu/jammy64"
       agent3.vm.disk :disk, size: "20GB", primary: true
       agent3.vm.network :private_network, ip: "192.168.56.40"
+      agent3.vm.network :private_network, ip: "192.168.57.40"
       agent3.vm.provider "virtualbox" do |vb|
         vb.memory = "2048"
       end
@@ -114,7 +117,7 @@ Vagrant.configure("2") do |config|
       echo "HZN_FDO_SVC_URL=http://192.168.56.10:9008/api" >> agent-install.cfg
       curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | sudo bash -s -- -i anax: -k ./agent-install.cfg -c css: -p IBM/pattern-ibm.helloworld -w '*' -T 120
       export $(cat agent-install.cfg)
-      echo "{
+      echo '{
     "properties": [
                 {
                         "name": "openhorizon.allowPrivileged",
@@ -126,7 +129,7 @@ Vagrant.configure("2") do |config|
                 }
 ],
         "constraints": []
-}" > node.policy.json
+}' > node.policy.json
      hzn unregister -f
      hzn register --policy=node.policy.json
     SHELL
