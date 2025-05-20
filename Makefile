@@ -115,7 +115,7 @@ up-hub: ## Setup VAGRANT file
 	@grep 'export HZN_ORG_ID=myorg' summary.txt | cut -c16- | tail -n1 > mycreds.env
 	@grep 'export HZN_EXCHANGE_USER_AUTH=' summary.txt | cut -c16- | tail -n1 >>mycreds.env
 	#@tail -n 2 summary.txt | cut -c 16- > mycreds.env
-	@if [ -f summary.txt ]; then rm summary.txt; fi
+	#@if [ -f summary.txt ]; then rm summary.txt; fi
 up: ## Run VAGRANT
 	$(eval include ./mycreds.env)
 	@envsubst < $(VAGRANT_TEMPLATE) > $(VAGRANT_VAGRANTFILE)
