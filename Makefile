@@ -112,7 +112,9 @@ check: ## Show all environment variable values related to VAGRANT
 init: up-hub up ## Initiate VAGRANT process
 up-hub: ## Setup VAGRANT file
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant up | tee summary.txt
-	@tail -n 2 summary.txt | cut -c 16- > mycreds.env
+        @grep 'export HZN_ORG_ID=myorg' summary.txt | cut -c16- | tail -n1 > mycreds.env
+        @grep 'export HZN_EXCHANGE_USER_AUTH=' summary.txt | cut -c16- | tail -n1 >>mycreds.env
+	#@tail -n 2 summary.txt | cut -c 16- > mycreds.env
 	@if [ -f summary.txt ]; then rm summary.txt; fi
 up: ## Run VAGRANT
 	$(eval include ./mycreds.env)
