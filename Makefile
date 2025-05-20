@@ -59,7 +59,7 @@ else ifeq ($(findstring psql-,$(MAKECMDGOALS)),psql-)
     export SERVICE_NAME ?= service-postgresql
     export SERVICE_VERSION ?= 0.0.1
 else
-	export EDGELAKE_TYPE ?= 1.3.2504-beta9
+	export EDGELAKE_TYPE ?= operator
 	export HZN_ORG_ID ?= myorg
 	export HZN_LISTEN_IP ?= 127.0.0.1
 	export SERVICE_NAME ?= service-edgelake-$(EDGELAKE_TYPE)
