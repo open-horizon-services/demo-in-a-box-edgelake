@@ -1,4 +1,4 @@
-dVagrant.configure("2") do |config|
+Vagrant.configure("2") do |config|
     config.vm.define "agent1" do |agent1|
       agent1.vm.box = "ubuntu/jammy64"
       agent1.vm.disk :disk, size: "20GB", primary: true
