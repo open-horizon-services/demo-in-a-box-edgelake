@@ -93,7 +93,6 @@ EOF
     sleep 10
     sudo  make up NIC_TYPE=enp0s8 EDGELAKE_TYPE=master  
     cd ..
-    export SYSYTEM_CONFIGURATION=bicycle
     # export HZN_TRANSPORT=https
     # export BAO_DISABLE_TLS=false
     export HZN_LISTEN_IP=0.0.0.0
