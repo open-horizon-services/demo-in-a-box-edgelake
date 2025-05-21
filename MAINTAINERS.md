@@ -9,3 +9,4 @@ See the information about [community membership roles](https://wiki.lfedge.org/d
 | Sanjeev Gupta   | SanjeevKGupta | <sanjeev@ibm.com>        |
 | Troy Fine       | t-fine        | <troy.f.fine@gmail.com>  |
 | Ori Shadmon     | oshadmon      | <ori@anylog.co>          |      
+| Mark Davidson   | mdavidson58   | <mark@anylog.co>         |  
