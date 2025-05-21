@@ -21,7 +21,7 @@ make up
 # Log into vm and check status of hzn/edgelake
 vagrant global-status
 
-make connect VMNAME=default
+make connect-hub
 
 make connect VMNAME=agent1
 
