@@ -24,3 +24,6 @@ vagrant global-status
 make attach agent1
 
 make attach agent2
+
+# Access to Remote CLI
+http://hostvmserverip:31800
