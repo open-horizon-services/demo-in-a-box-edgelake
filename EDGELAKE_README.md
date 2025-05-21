@@ -21,9 +21,11 @@ make up
 # Log into vm and check status of hzn/edgelake
 vagrant global-status
 
-make attach agent1
+make connect VMNAME=default
 
-make attach agent2
+make connect VMNAME=agent1
+
+make connect VMNAME=agent2
 
 # Access to Remote CLI
 http://hostvmserverip:31800
