@@ -13,7 +13,7 @@ export SYSTEM_CONFIGURATION=bicycle
 make up-hub
 
 # Load credentials
-. mycreds.env
+source mycreds.env
 
 # Install agents
 make up
