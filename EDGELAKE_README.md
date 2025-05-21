@@ -18,7 +18,7 @@ source mycreds.env
 # Install agents
 make up
 
-# Log into vm an check status of hzn/edgelake
+# Log into vm and check status of hzn/edgelake
 vagrant global-status
 
 make attach agent1
