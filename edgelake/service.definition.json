@@ -14,12 +14,6 @@
       "org": "myorg",
       "versionRange": "[0.0.0,INFINITY)",
       "arch": "$ARCH"
-    },
-    {
-      "url": "service-grafana",
-      "org": "myorg",
-      "versionRange": "[0.0.0,INFINITY)",
-      "arch": "$ARCH"
     }
   ],
   "userInput": [
