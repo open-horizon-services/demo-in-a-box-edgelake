@@ -28,6 +28,7 @@ Vagrant.configure("2") do |config|
     ufw allow 9443/tcp
     ufw allow 31800/tcp
     ufw allow 32048/tcp
+    ufw allow 32049/tcp
     ufw allow 32349/tcp
     ufw allow 32348/tcp
     sudo tee -a /etc/bind/named.conf.local > /dev/null <<EOF
