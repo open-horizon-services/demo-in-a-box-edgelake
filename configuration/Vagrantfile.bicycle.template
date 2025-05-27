@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
       template(name="MyCustomTemplate" type="string" string="<%PRI%>%TIMESTAMP% %HOSTNAME% %syslogtag% %msg%\\n")
 
       *.* ?remote-incoming-logs
-      *.* action(type="omfwd" target="localhost port="32150" protocol="tcp" template="MyCustomTemplate")
+      *.* action(type="omfwd" target="localhost" port="32150" protocol="tcp" template="MyCustomTemplate")
       EOF
 
       # Restart rsyslog to apply changes
@@ -74,7 +74,7 @@ Vagrant.configure("2") do |config|
       template(name="MyCustomTemplate" type="string" string="<%PRI%>%TIMESTAMP% %HOSTNAME% %syslogtag% %msg%\\n")
 
       *.* ?remote-incoming-logs
-      *.* action(type="omfwd" target="localhost port="32150" protocol="tcp" template="MyCustomTemplate")
+      *.* action(type="omfwd" target="localhost" port="32150" protocol="tcp" template="MyCustomTemplate")
       EOF
 
       # Restart rsyslog to apply changes
