@@ -88,6 +88,11 @@
           "value": true
         },
         {
+          "name": "CLUSTER_NAME",
+          "label": "Owner of the cluster",
+          "type": "string"
+        },
+        {
           "name": "BLOCKCHAIN_SYNC",
           "label": "How often to sync from blockchain",
           "type": "string",
