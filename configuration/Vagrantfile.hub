@@ -146,6 +146,6 @@ EOF
     cd ..
     sudo -sE make publish EDGELAKE_TYPE=operator
     hzn unregister -f
-    hzn register --policy=node.policy.json
+    hzn register --policy=edgelake/node.policy.json
   SHELL
 end
