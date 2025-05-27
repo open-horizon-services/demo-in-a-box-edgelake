@@ -145,7 +145,6 @@ EOF
     sleep 10
     cd ..
     sudo -sE make publish EDGELAKE_TYPE=operator
-    cd ..
     hzn unregister -f
     hzn register --policy=node.policy.json
   SHELL
