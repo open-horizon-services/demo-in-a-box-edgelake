@@ -8,14 +8,7 @@
   "arch": "$ARCH",
   "public": true,
   "sharable": "singleton",
-  "requiredServices": [
-    {
-      "url": "service-postgresql",
-      "org": "myorg",
-      "versionRange": "[0.0.0,INFINITY)",
-      "arch": "$ARCH"
-    }
-  ],
+  "requiredServices": [],
   "userInput": [
     {
       "name": "ANYLOG_PATH",
