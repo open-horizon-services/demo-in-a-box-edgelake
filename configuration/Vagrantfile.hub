@@ -84,6 +84,17 @@ DNS=192.168.56.10
 FallbackDNS=8.8.8.8
 EOF
     sudo systemctl restart systemd-resolved
+    CONF_FILE="/etc/rsyslog.d/60-custom-forwarding.conf"
+
+    sudo tee "$CONF_FILE" > /dev/null <<EOF
+    template(name="MyCustomTemplate" type="string" string="<%PRI%>%TIMESTAMP% %HOSTNAME% %syslogtag% %msg%\\n")
+
+    *.* ?remote-incoming-logs
+    *.* action(type="omfwd" target="localhost port="32150" protocol="tcp" template="MyCustomTemplate")
+    EOF
+
+    # Restart rsyslog to apply changes
+    sudo systemctl restart rsyslog
     git clone -b vagrant https://github.com/edgelake/docker-compose
     cd docker-compose
     sed -i 's/-it/-d/g' Makefile
@@ -133,5 +144,8 @@ EOF
     sleep 10
     cd ..
     sudo -sE make publish EDGELAKE_TYPE=operator
+    cd ..
+    hzn uregister -f
+    hzn register --policy=node.policy.json
   SHELL
 end
