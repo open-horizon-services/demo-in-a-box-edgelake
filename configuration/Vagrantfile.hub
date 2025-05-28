@@ -89,7 +89,7 @@ EOF
     sudo systemctl restart systemd-resolved
     sudo tee /etc/rsyslog.d/60-custom-forwarding.conf > /dev/null <<EOF
 template(name="MyCustomTemplate" type="string" string="<%PRI%>%TIMESTAMP% %HOSTNAME% %syslogtag% %msg%\\n")
-*.* action(type="omfwd" target="localhost" port="32150" protocol="tcp" template="MyCustomTemplate")
+*.* action(type="omfwd" target="192.168.56.10" port="32150" protocol="tcp" template="MyCustomTemplate")
 EOF
     sudo systemctl restart rsyslog
     git clone -b vagrant https://github.com/edgelake/docker-compose
