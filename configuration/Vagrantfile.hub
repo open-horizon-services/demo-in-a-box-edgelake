@@ -131,7 +131,6 @@ EOF
     tail -n 2 summary.txt | cut -c 3- > mycreds.env
     #rm summary.txt
     source mycreds.env
-    hzn key create "myorg" "mark@anylog.co"
     git clone -b edgelake-demo https://github.com/oshadmon/demo-in-a-box
     cd demo-in-a-box
     cd grafana 
