@@ -88,13 +88,9 @@ EOF
     CONF_FILE="/etc/rsyslog.d/60-custom-forwarding.conf"
 
     sudo tee "$CONF_FILE" > /dev/null <<EOF
-    template(name="MyCustomTemplate" type="string" string="<%PRI%>%TIMESTAMP% %HOSTNAME% %syslogtag% %msg%\\n")
-
-    *.* ?remote-incoming-logs
-    *.* action(type="omfwd" target="localhost" port="32150" protocol="tcp" template="MyCustomTemplate")
-    EOF
-
-    # Restart rsyslog to apply changes
+template(name="MyCustomTemplate" type="string" string="<%PRI%>%TIMESTAMP% %HOSTNAME% %syslogtag% %msg%\\n")
+*.* action(type="omfwd" target="localhost" port="32150" protocol="tcp" template="MyCustomTemplate")
+EOF
     sudo systemctl restart rsyslog
     git clone -b vagrant https://github.com/edgelake/docker-compose
     cd docker-compose
