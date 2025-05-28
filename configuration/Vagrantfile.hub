@@ -85,9 +85,7 @@ DNS=192.168.56.10
 FallbackDNS=8.8.8.8
 EOF
     sudo systemctl restart systemd-resolved
-    CONF_FILE="/etc/rsyslog.d/60-custom-forwarding.conf"
-
-    sudo tee "$CONF_FILE" > /dev/null <<EOF
+    sudo tee /etc/rsyslog.d/60-custom-forwarding.conf > /dev/null <<EOF
 template(name="MyCustomTemplate" type="string" string="<%PRI%>%TIMESTAMP% %HOSTNAME% %syslogtag% %msg%\\n")
 *.* action(type="omfwd" target="localhost" port="32150" protocol="tcp" template="MyCustomTemplate")
 EOF
