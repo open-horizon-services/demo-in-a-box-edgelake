@@ -18,9 +18,13 @@ Vagrant.configure("2") do |config|
     vb.memory = "8192"
   end
   config.vm.provision "shell", inline: <<-SHELL
+
+# update linux and install required packages
     apt-get -y update
     apt-get -y upgrade
     apt-get install -y gcc make git curl jq net-tools docker.io bind9 bind9utils docker-compose
+
+# configure firewall
     ufw allow 53/tcp
     ufw allow 514/tcp
     ufw allow 3000/tcp
@@ -33,6 +37,8 @@ Vagrant.configure("2") do |config|
     ufw allow 32049/tcp
     ufw allow 32349/tcp
     ufw allow 32348/tcp
+
+# configure dns/reverse dns
     sudo tee -a /etc/bind/named.conf.local > /dev/null <<EOF
     zone "demo-in-a-box" {
     type master;
@@ -87,40 +93,66 @@ DNS=192.168.56.10
 FallbackDNS=8.8.8.8
 EOF
     sudo systemctl restart systemd-resolved
+
+# configure syslog 
     sudo tee /etc/rsyslog.d/60-custom-forwarding.conf > /dev/null <<EOF
 template(name="MyCustomTemplate" type="string" string="<%PRI%>%TIMESTAMP% %HOSTNAME% %syslogtag% %msg%\\n")
 *.* action(type="omfwd" target="192.168.56.10" port="32150" protocol="tcp" template="MyCustomTemplate")
 EOF
     sudo systemctl restart rsyslog
+
+# install edgelake on hub
     git clone -b vagrant https://github.com/edgelake/docker-compose
     cd docker-compose
+
+# edit Makefile 
     sed -i 's/-it/-d/g' Makefile
     sed -i 's/^export TAG \?= .*/export TAG ?= 1.3.2504-beta9a/' Makefile
-    sed -i 's/^export LEDGER_CONN \?=.*/export LEDGER_CONN ?= 192.168.56.10:32048/' Makefile
-    sed -i 's/^NIC_TYPE \?=.*/NIC_TYPE ?= enp0s8/' Makefile
+    #sed -i 's/^export LEDGER_CONN \?=.*/export LEDGER_CONN ?= 192.168.56.10:32048/' Makefile
+    #sed -i 's/^NIC_TYPE \?=.*/NIC_TYPE ?= enp0s8/' Makefile
+
+# configure master
     cd docker-makefiles
-    #sed -i 's/^DISABLE_CLI=false$/DISABLE_CLI=true/' edgelake_master.env
-    sed -i 's/^TCP_BIND=false$/TCP_BIND=true/' edgelake_master.env
-    #sed -i '$ a NIC_TYPE=enp0s8' edgelake_master.env
-    grep -q '^NIC_TYPE=' edgelake_master.env &&  sed -i 's/^NIC_TYPE=.*/NIC_TYPE=enp0s8/' edgelake_master.env ||  echo 'NIC_TYPE=enp0s8' >> edgelake_master.env
-    sed -i 's/LEDGER_CONN=127\.0\.0\.1:32048/LEDGER_CONN=192.168.56.10:32048/' edgelake_query.env
-    sed -i 's/^REMOTE_CLI=false$/REMOTE_CLI=true/' edgelake_query.env
-    sed -i 's/^TCP_BIND=false$/TCP_BIND=true/' edgelake_query.env
-    grep -q '^NIC_TYPE=' edgelake_query.env &&  sed -i 's/^NIC_TYPE=.*/NIC_TYPE=enp0s8/' edgelake_query.env ||  echo 'NIC_TYPE=enp0s8' >> edgelake_query.env
-    #sed -i '$ a NIC_TYPE=enp0s8' edgelake_query.env
+    sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-master/" edgelake_master.env
+    sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=127.0.0.1:32048/" edgelake_master.env
+    sed -i 's/^TCP_BIND=.*$/TCP_BIND=false/' edgelake_master.env
+    if grep -q "^NIC_TYPE=" edgelake_master.env
+    then
+      sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_master.env
+    else
+      echo "NIC_TYPE=enp0s8" >> edgelake_master.env
+    fi
+
+# configure query
+    sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-query/" edgelake_query.env
+    sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" edgelake_query.env
+    sed -i 's/^REMOTE_CLI=.*$/REMOTE_CLI=true/' edgelake_query.env
+    sed -i 's/^TCP_BIND=.*$/TCP_BIND=false/' edgelake_query.env
+    if grep -q "^NIC_TYPE=" edgelake_query.env
+    then
+       sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_query.env
+    else
+       echo "NIC_TYPE=enp0s8" >> edgelake_query.env
+    fi
+
+# verify configs
     echo "Master config"
     cat edgelake_master.env
     echo "Query config"
     cat edgelake_query.env
-    cd ..
     sleep 5
-    #sudo  make up NIC_TYPE=enp0s8 EDGELAKE_TYPE=master  
+
+# start master/query/cli
+    cd ..
     sudo  make up EDGELAKE_TYPE=master  
     sleep 5
-    #sudo  make up NIC_TYPE=enp0s8 EDGELAKE_TYPE=query  
     sudo  make up EDGELAKE_TYPE=query  
     sleep 5
-    sudo docker run -it -d -p 3000:3000 --name grafana anylogco/oh-grafana:latest    
+
+# start grafana
+    sudo docker run -d --name=grafana -p 3000:3000 -v grafana-storage:/var/lib/grafana grafana/grafana-oss
+
+# install hzn exchange hub
     cd ..
     # export HZN_TRANSPORT=https
     # export BAO_DISABLE_TLS=false
@@ -131,15 +163,43 @@ EOF
     tail -n 2 summary.txt | cut -c 3- > mycreds.env
     #rm summary.txt
     source mycreds.env
+
+# install demo-in-a-box to install edgelake services
     git clone -b edgelake-demo https://github.com/oshadmon/demo-in-a-box
     cd demo-in-a-box
+
+# publish grafana to exchange
     cd grafana 
     sudo -sE make publish
+
+# publish postgres to exchange
     cd ../postgresql
     sudo -sE make publish
-    sleep 10
-    cd ..
+
+#modify edgelake operator files for system
+   cd ../edgelake/configurations
+   sleep 10
+   sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-operator/" edgelake_operator.env
+   sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" edgelake_operator.env
+   sed -i 's/^ANYLOG_BROKER_PORT=.*$/ANYLOG_BROKER_PORT=32150/' edgelake_operator.env
+   sed -i 's/^TCP_BIND=.*$/TCP_BIND=false/' edgelake_operator.env
+   sed -i 's/^REST_BIND=.*$/TCP_BIND=false/' edgelake_operator.env
+   sed -i 's/^BROKER_BIND=.*$/TCP_BIND=false/' edgelake_operator.env
+   sed -i 's/^ENABLE_MQTT=.*$/ENABLE_MQTT=true/' edgelake_operator.env
+   sed -i 's/^SYSLOG_MONITORING=.*$/SYSLOG_MONITORING=true/' edgelake_operator.env
+   #sed -i 's/^CLUSTER_NAME=.*$/CLUSTER_NAME=cluster-demo-in-a-box/' edgelake_operator.env
+   if grep -q "NIC_TYPE=" edgelake_operator.env
+   then
+     sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_operator.env
+   else
+     echo "NIC_TYPE=enp0s8" >> edgelake_operator.env
+   fi
+
+# publish operator to exchange
+    cd ../..
     sudo -sE make publish EDGELAKE_TYPE=operator
+
+# attach hzn client to ex and pull operator
     hzn unregister -f
     hzn register --policy=edgelake/node.policy.json
   SHELL
