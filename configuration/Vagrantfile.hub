@@ -150,7 +150,7 @@ EOF
     sleep 5
 
 # start grafana
-    sudo docker run -d --name=grafana -p 3000:3000 -v grafana-storage:/var/lib/grafana grafana/grafana-oss
+    sudo docker run -it -d -p 3000:3000 --name grafana anylogco/oh-grafana:latest
 
 # install hzn exchange hub
     cd ..
