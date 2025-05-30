@@ -120,7 +120,7 @@ EOF
     #sudo  make up NIC_TYPE=enp0s8 EDGELAKE_TYPE=query  
     sudo  make up EDGELAKE_TYPE=query  
     sleep 5
-    sudo docker run -d --name=grafana -p 3000:3000 -v grafana-storage:/var/lib/grafana grafana/grafana-oss
+    sudo docker run -it -d -p 3000:3000 --name grafana anylogco/oh-grafana:latest    
     cd ..
     # export HZN_TRANSPORT=https
     # export BAO_DISABLE_TLS=false
