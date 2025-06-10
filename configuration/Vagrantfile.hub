@@ -114,7 +114,7 @@ EOF
 # configure master
     cd docker-makefiles
     sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-master/" edgelake_master.env
-    sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=127.0.0.1:32048/" edgelake_master.env
+    sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" edgelake_master.env
     sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' edgelake_master.env
     if grep -q "^NIC_TYPE=" edgelake_master.env
     then
