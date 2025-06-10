@@ -1,3 +1,4 @@
+
 Vagrant.configure("2") do |config|
     config.vm.define "agent1" do |agent1|
       agent1.vm.box = "ubuntu/jammy64"
@@ -48,7 +49,13 @@ EOF
      curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i css: -k ./agent-install.cfg -c css: -n node.policy.json -T 120
      #unregister -f
      #hzn register --policy=node.policy.json
-    SHELL
+     sleep 60
+
+# install docker monitoring
+  wget https://raw.githubusercontent.com/AnyLog-co/Sample-Data-Generator/refs/heads/os-dev/docker_insight.py
+  sudo python3 docker_insight.py 127.0.0.1:32149 --db-name new_company --table-name docker_insight --wait 0.5 &
+    
+SHELL
   end
     config.vm.define "agent2" do |agent2|
       agent2.vm.box = "ubuntu/jammy64"
@@ -99,6 +106,11 @@ EOF
      curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i anax: -k ./agent-install.cfg -c css: -n node.policy.json -T 120
      #unregister -f
      #hzn register --policy=node.policy.json
+     sleep 60
+
+# install docker monitoring
+  wget https://raw.githubusercontent.com/AnyLog-co/Sample-Data-Generator/refs/heads/os-dev/docker_insight.py
+  sudo python3 docker_insight.py 127.0.0.1:32149 --db-name new_company --table-name docker_insight --wait 0.5 &
     SHELL
   end
 end
