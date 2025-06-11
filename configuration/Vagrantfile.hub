@@ -116,6 +116,8 @@ EOF
     sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-master/" edgelake_master.env
     sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" edgelake_master.env
     sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' edgelake_master.env
+    sed -i 's/^REST_BIND=.*$/REST_BIND=true/' edgelake_master.env
+    sed -i 's/^BROKER_BIND=.*$/BROKER_BIND=true/' edgelake_master.env
     if grep -q "^NIC_TYPE=" edgelake_master.env
     then
       sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_master.env
@@ -127,12 +129,13 @@ EOF
     sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-query/" edgelake_query.env
     sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" edgelake_query.env
     sed -i 's/^REMOTE_CLI=.*$/REMOTE_CLI=true/' edgelake_query.env
-    sed -i 's/^TCP_BIND=.*$/TCP_BIND=false/' edgelake_query.env
+    sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' edgelake_query.env
+    sed -i 's/^REST_BIND=.*$/REST_BIND=false/' edgelake_query.env
     if grep -q "^NIC_TYPE=" edgelake_query.env
     then
        sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_query.env
     else
-       echo "NIC_TYPE=enp0s8" >> edgelake_query.env
+      echo "NIC_TYPE=enp0s8" >> edgelake_query.env
     fi
 
 # verify configs
