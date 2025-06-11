@@ -209,7 +209,7 @@ EOF
 
 # install docker monitoring
   wget https://raw.githubusercontent.com/AnyLog-co/Sample-Data-Generator/refs/heads/os-dev/docker_insight.py
-  sudo python3 docker_insight.py 127.0.0.1:32149 --db-name new_company --table-name docker_insight --wait 0.5 &
+  sudo python3 docker_insight.py 192.168.56.10:32149 --db-name new_company --table-name docker_insight --wait 0.5 &
  
   SHELL
 end
