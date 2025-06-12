@@ -46,8 +46,7 @@ EOF
 ],
         "constraints": []
 }' > node.policy.json
-     curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i css: -k ./agent-install.cfg -c css: -n node.policy.json -T 120
-     #unregister -f
+    curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i anax: -k ./agent-install.cfg -c css: -n node.policy.json -T 120     #unregister -f
      #hzn register --policy=node.policy.json
      sleep 60
 
@@ -103,8 +102,7 @@ EOF
 ],
         "constraints": []
 }' > node.policy.json
-     curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i anax: -k ./agent-install.cfg -c css: -n node.policy.json -T 120
-     #unregister -f
+    curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i anax: -k ./agent-install.cfg -c css: -n node.policy.json -T 120     #unregister -f
      #hzn register --policy=node.policy.json
      sleep 60
 
