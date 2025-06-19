@@ -153,7 +153,7 @@ EOF
     sleep 5
 
 # start grafana
-    sudo docker run -it -d -p 3000:3000 -e DATASOURCE=http://192.168.56.10:32349 --name grafana anylogco/oh-grafana:latest
+    sudo docker run -it -d -p 3000:3000 -e DATASOURCE_URL=http://192.168.56.10:32349 --name grafana anylogco/oh-grafana:latest
 
 # install hzn exchange hub
     cd ..
