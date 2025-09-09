@@ -162,6 +162,7 @@ EOF
     export HZN_LISTEN_IP=0.0.0.0
     export CSS_IMAGE_TAG=1.10.1-1577
     export MONGO_IMAGE_TAG=4.0.6
+    export EXCHANGE_IMAGE_NAME=quay.io/open-horizon/exchange-alpine
     curl -sSL https://raw.githubusercontent.com/open-horizon/devops/master/mgmt-hub/deploy-mgmt-hub.sh | sudo -sE HZN_LISTEN_IP=0.0.0.0 bash -s --  | tee summary.txt
     tail -n 2 summary.txt | cut -c 3- > mycreds.env
     #rm summary.txt
