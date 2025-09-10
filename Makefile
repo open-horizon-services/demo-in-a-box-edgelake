@@ -351,6 +351,26 @@ deploy-check: ## check deployment
 #======================================================================================================================#
 #  											Testing / Help related commands											   #
 #======================================================================================================================#
+test: ## Test ERB template syntax and generation
+	@echo "=================="
+	@echo "TESTING ERB TEMPLATE"
+	@echo "=================="
+	@echo "Testing ERB template syntax..."
+	@ruby -c -e "require 'erb'; ERB.new(File.read('$(VAGRANT_TEMPLATE)'))" 2>/dev/null && echo "✅ ERB syntax is valid" || (echo "❌ ERB syntax error detected" && exit 1)
+	@echo "Testing template generation with sample data..."
+	@mkdir -p test_output
+	@erb hzn_org_id=testorg hzn_exchange_user_auth=testuser:testpass num_agents=2 base_ip=30 memory=1024 disk_size=10 $(VAGRANT_TEMPLATE) > test_output/Vagrantfile.test 2>/dev/null && echo "✅ Template generation successful" || (echo "❌ Template generation failed" && exit 1)
+	@echo "Validating generated Vagrantfile syntax..."
+	@ruby -c test_output/Vagrantfile.test 2>/dev/null && echo "✅ Generated Vagrantfile syntax is valid" || (echo "❌ Generated Vagrantfile has syntax errors" && exit 1)
+	@echo "Testing with different system configurations..."
+	@for config in unicycle bicycle car semi; do \
+		echo "Testing $$config configuration..."; \
+		erb hzn_org_id=testorg hzn_exchange_user_auth=testuser:testpass num_agents=$$(grep -A 20 "ifeq (\$$(SYSTEM_CONFIGURATION),$$config)" $(MAKEFILE_LIST) | grep "NUM_AGENTS :=" | head -1 | awk '{print $$3}') base_ip=$$(grep -A 20 "ifeq (\$$(SYSTEM_CONFIGURATION),$$config)" $(MAKEFILE_LIST) | grep "BASE_IP :=" | head -1 | awk '{print $$3}') memory=$$(grep -A 20 "ifeq (\$$(SYSTEM_CONFIGURATION),$$config)" $(MAKEFILE_LIST) | grep "MEMORY :=" | head -1 | awk '{print $$3}') disk_size=$$(grep -A 20 "ifeq (\$$(SYSTEM_CONFIGURATION),$$config)" $(MAKEFILE_LIST) | grep "DISK_SIZE :=" | head -1 | awk '{print $$3}') $(VAGRANT_TEMPLATE) > test_output/Vagrantfile.$$config.test 2>/dev/null && echo "✅ $$config configuration test passed" || (echo "❌ $$config configuration test failed" && exit 1); \
+	done
+	@echo "Cleaning up test files..."
+	@rm -rf test_output
+	@echo "🎉 All ERB template tests passed successfully!"
+
 test-node: ## Test a node via REST interface
 ifeq ($(TEST_CONN), )
 	@echo "Missing Connection information (Param Name: TEST_CONN)"
@@ -424,7 +444,7 @@ help:
 	@echo "======================================================================================================================"
 	@echo "                                             Testing / Help related commands                                           "
 	@echo "======================================================================================================================"
-	@grep -E '^(test-node|test-network|check-vars|help):.*?## .*$$' $(MAKEFILE_LIST) | \
+	@grep -E '^(test|test-node|test-network|check-vars|help):.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk -F':|##' '{ printf "  \033[36m%-20s\033[0m %s\n", $$1, $$3 }'
 
 	@echo ""
