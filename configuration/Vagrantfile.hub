@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
 # update linux and install required packages
     apt-get -y update
     apt-get -y upgrade
-    apt-get install -y gcc make git curl jq net-tools docker.io bind9 bind9utils docker-compose
+    apt-get install -y gcc make git curl jq net-tools docker.io bind9 bind9utils docker-compose-v2
 
 # configure firewall
     ufw allow 53/tcp
