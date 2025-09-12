@@ -8,9 +8,40 @@ export HZN_ORG_ID ?= myorg
 
 # Which system configuration to be provisioned
 export SYSTEM_CONFIGURATION ?= unicycle
+
+# Configuration parameters for the ERB template
+export NUM_AGENTS ?= 1
+export BASE_IP ?= 20
+export MEMORY ?= 2048
+export DISK_SIZE ?= 20
+
+# Map system configurations to parameters
+ifeq ($(SYSTEM_CONFIGURATION),unicycle)
+    NUM_AGENTS := 1
+    BASE_IP := 20
+    MEMORY := 2048
+    DISK_SIZE := 20
+else ifeq ($(SYSTEM_CONFIGURATION),bicycle)
+    NUM_AGENTS := 3
+    BASE_IP := 20
+    MEMORY := 2048
+    DISK_SIZE := 20
+else ifeq ($(SYSTEM_CONFIGURATION),car)
+    NUM_AGENTS := 5
+    BASE_IP := 20
+    MEMORY := 2048
+    DISK_SIZE := 20
+else ifeq ($(SYSTEM_CONFIGURATION),semi)
+    NUM_AGENTS := 7
+    BASE_IP := 20
+    MEMORY := 2048
+    DISK_SIZE := 20
+endif
+
 export VAGRANT_HUB := "./configuration/Vagrantfile.hub"
 export VAGRANT_VAGRANTFILE := "./configuration/Vagrantfile.${SYSTEM_CONFIGURATION}"
-export VAGRANT_TEMPLATE := "./configuration/Vagrantfile.${SYSTEM_CONFIGURATION}.template"
+export VAGRANT_TEMPLATE := "./configuration/Vagrantfile.template.erb"
+export VAGRANT_TEMPLATE_LEGACY := "./configuration/Vagrantfile.${SYSTEM_CONFIGURATION}.template"
 VMNAME :=
 
 # Detect Operating System running Make
@@ -89,19 +120,22 @@ export CONTAINER_CMD := $(shell if command -v podman >/dev/null 2>&1; then echo 
 export PYTHON_CMD := $(shell if command -v python >/dev/null 2>&1; then echo "python"; \
 	elif command -v python3 >/dev/null 2>&1; then echo "python3"; fi)
 
-
-
-
 all: help
+
 #======================================================================================================================#
 #  										   VAGRANT related commands											   	   	   #
 #======================================================================================================================#
 default: status
+
 check: ## Show all environment variable values related to VAGRANT
 	@echo "=====================     ============================================="
 	@echo "ENVIRONMENT VARIABLES     VALUES"
 	@echo "=====================     ============================================="
 	@echo "SYSTEM_CONFIGURATION      ${SYSTEM_CONFIGURATION}"
+	@echo "NUM_AGENTS                ${NUM_AGENTS}"
+	@echo "BASE_IP                   ${BASE_IP}"
+	@echo "MEMORY                    ${MEMORY}"
+	@echo "DISK_SIZE                 ${DISK_SIZE}"
 	@echo "VAGRANT_HUB               ${VAGRANT_HUB}"
 	@echo "VAGRANT_TEMPLATE          ${VAGRANT_TEMPLATE}"
 	@echo "VAGRANT_VAGRANTFILE       ${VAGRANT_VAGRANTFILE}"
@@ -109,35 +143,61 @@ check: ## Show all environment variable values related to VAGRANT
 	@echo "OS                        ${OS}"
 	@echo "=====================     ============================================="
 	@echo ""
+
 init: up-hub up ## Initiate VAGRANT process
+
 up-hub: ## Setup VAGRANT file
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant up | tee summary.txt
 	@grep 'export HZN_ORG_ID=' summary.txt | cut -c16- | tail -n1 > mycreds.env
 	@grep 'export HZN_EXCHANGE_USER_AUTH=' summary.txt | cut -c16- | tail -n1 >>mycreds.env
-	#@tail -n 2 summary.txt | cut -c 16- > mycreds.env
-	#@if [ -f summary.txt ]; then rm summary.txt; fi
-up: ## Run VAGRANT
+	@if [ -f summary.txt ]; then rm summary.txt; fi
+
+up: ## Run VAGRANT using ERB template
 	$(eval include ./mycreds.env)
-	@envsubst < $(VAGRANT_TEMPLATE) > $(VAGRANT_VAGRANTFILE)
+	@erb hzn_org_id=${HZN_ORG_ID} hzn_exchange_user_auth=${HZN_EXCHANGE_USER_AUTH} num_agents=$(NUM_AGENTS) base_ip=$(BASE_IP) memory=$(MEMORY) disk_size=$(DISK_SIZE) $(VAGRANT_TEMPLATE) > $(VAGRANT_VAGRANTFILE)
+	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up --parallel
+
+up-legacy: ## Run VAGRANT using legacy static template
+	$(eval include ./mycreds.env)
+	@envsubst < $(VAGRANT_TEMPLATE_LEGACY) > $(VAGRANT_VAGRANTFILE)
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant up
-#	@if [ -f mycreds.env ]; then rm mycreds.env; fi
+
 connect-hub: ## connect to VAGRANT hub
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant ssh
+
 connect: ## connect to VAGRANT
-	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh $(VMNAME)
+	@if [ -f $(VAGRANT_VAGRANTFILE) ]; then \
+		VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant ssh $(VMNAME); \
+	else \
+		echo "Error: Vagrantfile not found at $(VAGRANT_VAGRANTFILE). Run 'make up' first to generate it."; \
+		exit 1; \
+	fi
+
 status: ## check VAGRANT status
-	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant status
+	@if [ -f $(VAGRANT_VAGRANTFILE) ]; then \
+		VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant status; \
+	else \
+		echo "Error: Vagrantfile not found at $(VAGRANT_VAGRANTFILE). Run 'make up' first to generate it."; \
+		exit 1; \
+	fi
+
 status-hub: ## check VAGRANT hub status
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant status
+
 down: destroy destroy-hub clean ## stop and clean VAGRANT
+
 clean: ## clean VAGRANT and hub
 	@if [ -f $(VAGRANT_VAGRANTFILE) ]; then rm $(VAGRANT_VAGRANTFILE); fi
 	@if [ -f summary.txt ]; then rm summary.txt; fi
 	@if [ -f mycreds.env ]; then rm mycreds.env; fi
+	@vagrant global-status --prune
+
 destroy: ## destroy VAGRANT
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_VAGRANTFILE) vagrant destroy -f
+
 destroy-hub: ## clean  VAGRANT hub
 	@VAGRANT_VAGRANTFILE=$(VAGRANT_HUB) vagrant destroy -f
+
 browse: ## show connection information
 ifeq ($(OS),Darwin)
 	@open http://127.0.0.1:8123
@@ -240,6 +300,7 @@ psql-check: ## PostgresSQL variable check
 	@echo "=================="
 	@cat postgresql/horizon/service.definition.json | envsubst
 	@echo ""
+
 #======================================================================================================================#
 #  										   EdgeLake related commands											   	   #
 #======================================================================================================================#
@@ -290,6 +351,26 @@ deploy-check: ## check deployment
 #======================================================================================================================#
 #  											Testing / Help related commands											   #
 #======================================================================================================================#
+test: ## Test ERB template syntax and generation
+	@echo "=================="
+	@echo "TESTING ERB TEMPLATE"
+	@echo "=================="
+	@echo "Testing ERB template syntax..."
+	@ruby -c -e "require 'erb'; ERB.new(File.read('$(VAGRANT_TEMPLATE)'))" 2>/dev/null && echo "✅ ERB syntax is valid" || (echo "❌ ERB syntax error detected" && exit 1)
+	@echo "Testing template generation with sample data..."
+	@mkdir -p test_output
+	@erb hzn_org_id=testorg hzn_exchange_user_auth=testuser:testpass num_agents=2 base_ip=30 memory=1024 disk_size=10 $(VAGRANT_TEMPLATE) > test_output/Vagrantfile.test 2>/dev/null && echo "✅ Template generation successful" || (echo "❌ Template generation failed" && exit 1)
+	@echo "Validating generated Vagrantfile syntax..."
+	@ruby -c test_output/Vagrantfile.test 2>/dev/null && echo "✅ Generated Vagrantfile syntax is valid" || (echo "❌ Generated Vagrantfile has syntax errors" && exit 1)
+	@echo "Testing with different system configurations..."
+	@for config in unicycle bicycle car semi; do \
+		echo "Testing $$config configuration..."; \
+		erb hzn_org_id=testorg hzn_exchange_user_auth=testuser:testpass num_agents=$$(grep -A 20 "ifeq (\$$(SYSTEM_CONFIGURATION),$$config)" $(MAKEFILE_LIST) | grep "NUM_AGENTS :=" | head -1 | awk '{print $$3}') base_ip=$$(grep -A 20 "ifeq (\$$(SYSTEM_CONFIGURATION),$$config)" $(MAKEFILE_LIST) | grep "BASE_IP :=" | head -1 | awk '{print $$3}') memory=$$(grep -A 20 "ifeq (\$$(SYSTEM_CONFIGURATION),$$config)" $(MAKEFILE_LIST) | grep "MEMORY :=" | head -1 | awk '{print $$3}') disk_size=$$(grep -A 20 "ifeq (\$$(SYSTEM_CONFIGURATION),$$config)" $(MAKEFILE_LIST) | grep "DISK_SIZE :=" | head -1 | awk '{print $$3}') $(VAGRANT_TEMPLATE) > test_output/Vagrantfile.$$config.test 2>/dev/null && echo "✅ $$config configuration test passed" || (echo "❌ $$config configuration test failed" && exit 1); \
+	done
+	@echo "Cleaning up test files..."
+	@rm -rf test_output
+	@echo "🎉 All ERB template tests passed successfully!"
+
 test-node: ## Test a node via REST interface
 ifeq ($(TEST_CONN), )
 	@echo "Missing Connection information (Param Name: TEST_CONN)"
@@ -335,7 +416,7 @@ help:
 	@echo "======================================================================================================================"
 	@echo "                                             VAGRANT related commands                                                  "
 	@echo "======================================================================================================================"
-	@grep -E '^(default|check|init|up-hub|up|connect-hub|connect|status|status-hub|down|clean|destroy|destroy-hub|browse):.*?## .*$$' $(MAKEFILE_LIST) | \
+	@grep -E '^(default|check|init|up-hub|up|up-legacy|connect-hub|connect|status|status-hub|down|clean|destroy|destroy-hub|browse):.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk -F':|##' '{ printf "  \033[36m%-20s\033[0m %s\n", $$1, $$3 }'
 
 	@echo ""
@@ -363,7 +444,7 @@ help:
 	@echo "======================================================================================================================"
 	@echo "                                             Testing / Help related commands                                           "
 	@echo "======================================================================================================================"
-	@grep -E '^(test-node|test-network|check-vars|help):.*?## .*$$' $(MAKEFILE_LIST) | \
+	@grep -E '^(test|test-node|test-network|check-vars|help):.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk -F':|##' '{ printf "  \033[36m%-20s\033[0m %s\n", $$1, $$3 }'
 
 	@echo ""
@@ -377,3 +458,9 @@ help:
 	@echo "  ANYLOG_REST_PORT      Port for REST API"
 	@echo "  ANYLOG_BROKER_PORT    Optional broker port"
 	@echo "  TEST_CONN             REST connection information for testing network connectivity"
+	@echo "  NUM_AGENTS            Number of agent VMs to create (ERB template)"
+	@echo "  BASE_IP               Starting IP address for agent VMs (ERB template)"
+	@echo "  MEMORY                Memory allocation per agent VM in MB (ERB template)"
+	@echo "  DISK_SIZE             Disk size per agent VM in GB (ERB template)"
+
+.PHONY: default check init up-hub up up-legacy status down destroy browse connect clean connect-hub status-hub destroy-hub

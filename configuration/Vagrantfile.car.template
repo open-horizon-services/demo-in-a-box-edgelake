@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
       agent1.vm.provision "shell", inline: <<-SHELL
       apt-get -y update
       apt-get -y upgrade
-      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose
+      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose-v2
       touch agent-install.crt
       export HZN_ORG_ID=${HZN_ORG_ID}
       export HZN_EXCHANGE_USER_AUTH=${HZN_EXCHANGE_USER_AUTH}
@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
       agent2.vm.provision "shell", inline: <<-SHELL
       apt-get -y update
       apt-get -y upgrade
-      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose
+      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose-v2
       touch agent-install.crt
       export HZN_ORG_ID=${HZN_ORG_ID}
       export HZN_EXCHANGE_USER_AUTH=${HZN_EXCHANGE_USER_AUTH}
@@ -68,7 +68,7 @@ Vagrant.configure("2") do |config|
       agent3.vm.provision "shell", inline: <<-SHELL
       apt-get -y update
       apt-get -y upgrade
-      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose
+      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose-v2
       touch agent-install.crt
       export HZN_ORG_ID=${HZN_ORG_ID}
       export HZN_EXCHANGE_USER_AUTH=${HZN_EXCHANGE_USER_AUTH}
@@ -97,7 +97,7 @@ Vagrant.configure("2") do |config|
       agent4.vm.provision "shell", inline: <<-SHELL
       apt-get -y update
       apt-get -y upgrade
-      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose
+      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose-v2
       touch agent-install.crt
       export HZN_ORG_ID=${HZN_ORG_ID}
       export HZN_EXCHANGE_USER_AUTH=${HZN_EXCHANGE_USER_AUTH}
@@ -126,7 +126,7 @@ Vagrant.configure("2") do |config|
       agent5.vm.provision "shell", inline: <<-SHELL
       apt-get -y update
       apt-get -y upgrade
-      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose
+      apt-get install -y gcc make git curl jq net-tools docker.io docker-compose-v2
       touch agent-install.crt
       export HZN_ORG_ID=${HZN_ORG_ID}
       export HZN_EXCHANGE_USER_AUTH=${HZN_EXCHANGE_USER_AUTH}
