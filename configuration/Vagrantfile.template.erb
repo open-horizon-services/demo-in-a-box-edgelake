@@ -47,6 +47,9 @@ EOF
       curl -sSL https://raw.githubusercontent.com/open-horizon/anax/refs/heads/master/agent-install/agent-install.sh | bash -s -- -i anax: -k ./agent-install.cfg -c css: -n node.policy.json -T 120
       sleep 120
 
+      # clone service-edgelake-federated-learning and publish services and policies
+      git clone -b fix_arch_dep_serv https://github.com/t-fine/service-edgelake-federated-learning.git
+
       wget https://raw.githubusercontent.com/AnyLog-co/Sample-Data-Generator/refs/heads/os-dev/docker_insight.py
       sudo python3 docker_insight.py 192.168.56.<%= base_ip.to_i + (i-1)*10 %>:32149 --db-name new_company --table-name docker_insight --wait 0.5 &
       SHELL
