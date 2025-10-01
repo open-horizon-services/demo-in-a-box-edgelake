@@ -205,7 +205,7 @@ EOF
    then
      sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_operator.env
    else
-     echo "NIC_TYPE=enp0s8" >> edgelake_operator.env
+     echo "\nNIC_TYPE=enp0s8" >> edgelake_operator.env
    fi
 
 # publish operator to exchange
