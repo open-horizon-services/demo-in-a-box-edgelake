@@ -102,7 +102,7 @@ EOF
     sudo systemctl restart rsyslog
 
 # install edgelake on hub
-    git clone -b vagrant https://github.com/edgelake/docker-compose
+    git clone https://github.com/edgelake/docker-compose
     cd docker-compose
 
 # edit Makefile 
