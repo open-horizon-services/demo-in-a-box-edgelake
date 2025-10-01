@@ -10,7 +10,7 @@ cd demo-in-a-box
 export SYSTEM_CONFIGURATION=bicycle
 
 # Install exchange hub
-make up hub
+make up-hub
 
 # Load credentials
 source mycreds.env
@@ -21,7 +21,7 @@ make up
 # Log into vm and check status of hzn/edgelake
 vagrant global-status
 
-make connect hub
+make connect-hub
 
 make connect VMNAME=agent1
 
