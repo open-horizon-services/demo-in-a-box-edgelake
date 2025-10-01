@@ -15,10 +15,10 @@ export OS := $(shell uname -s)
 
 # Conditional port override based on EDGELAKE_TYPE
 
-export DOCKER_IMAGE_VERSION := 1.3.2504
+export DOCKER_IMAGE_VERSION := latest
 ARCH := $(shell hzn architecture)
 ifeq ($(ARCH),aarch64 arm64)
-	DOCKER_IMAGE_VERSION := 1.3.2504-arm64
+	DOCKER_IMAGE_VERSION := latest
 endif
 ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
 	export NODE_NAME := $(shell cat edgelake/configurations/edgelake_${EDGELAKE_TYPE}.env | grep NODE_NAME | awk -F "=" '{print $$2}' | sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
