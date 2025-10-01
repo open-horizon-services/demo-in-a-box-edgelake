@@ -192,8 +192,8 @@ EOF
 #modify edgelake operator files for system
    cd ../edgelake/configurations
    sleep 10
-   sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-operator/" edgelake_operator.env
-   sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" edgelake_operator.env
+   sed -i 's/^NODE_NAME=.*$/NODE_NAME=$(hostname)-operator/' edgelake_operator.env
+   sed -i 's/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/' edgelake_operator.env
    sed -i 's/^ANYLOG_BROKER_PORT=.*$/ANYLOG_BROKER_PORT=32150/' edgelake_operator.env
    sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' edgelake_operator.env
    sed -i 's/^REST_BIND=.*$/TCP_BIND=true/' edgelake_operator.env
@@ -201,11 +201,11 @@ EOF
    sed -i 's/^ENABLE_MQTT=.*$/ENABLE_MQTT=true/' edgelake_operator.env
    sed -i 's/^SYSLOG_MONITORING=.*$/SYSLOG_MONITORING=true/' edgelake_operator.env
    #sed -i 's/^CLUSTER_NAME=.*$/CLUSTER_NAME=cluster-demo-in-a-box/' edgelake_operator.env
-   if grep -q "NIC_TYPE=" edgelake_operator.env
+   if grep -q 'NIC_TYPE=' edgelake_operator.env
    then
-     sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_operator.env
+     sed -i 's/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/' edgelake_operator.env
    else
-     echo "\nNIC_TYPE=enp0s8" >> edgelake_operator.env
+     echo '\nNIC_TYPE=enp0s8' >> edgelake_operator.env
    fi
 
 # publish operator to exchange
