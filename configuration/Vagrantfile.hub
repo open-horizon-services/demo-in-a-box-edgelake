@@ -151,8 +151,10 @@ EOF
 
 # start master/query/cli
     cd ..
+    sudo  make generate-docker-compose EDGELAKE_TYPE=master
     sudo  make up EDGELAKE_TYPE=master  
     sleep 5
+    sudo make generate-docker-commpose EDGELAKE_TYPE=query
     sudo  make up EDGELAKE_TYPE=query  
     sleep 5
 
