@@ -5,6 +5,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: "192.168.56.10"
   config.vm.network "forwarded_port", guest: 514, host: 514, auto_correct: true
   config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true
+  config.vm.network "forwarded_port", guest: 31800, host: 3001, auto_correct: true
   config.vm.network "forwarded_port", guest: 3090, host: 3090, auto_correct: true
   config.vm.network "forwarded_port", guest: 3111, host: 3111, auto_correct: true
   config.vm.network "forwarded_port", guest: 9008, host: 9008, auto_correct: true
@@ -28,6 +29,7 @@ Vagrant.configure("2") do |config|
     ufw allow 53/tcp
     ufw allow 514/tcp
     ufw allow 3000/tcp
+    ufw allow 3001/tcp
     ufw allow 3090/tcp
     ufw allow 3111/tcp
     ufw allow 9008/tcp
@@ -211,6 +213,9 @@ EOF
 # install docker monitoring
   wget https://raw.githubusercontent.com/AnyLog-co/Sample-Data-Generator/refs/heads/os-dev/docker_insight.py
   sudo python3 docker_insight.py 192.168.56.10:32149 --db-name new_company --table-name docker_insight --wait 0.5 &
- 
-  SHELL
+
+# install new gui
+  IP_ADDR=$(ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+  docker run -d -p 8000:8000 -p 3001:3001   --name gui-1   --restart unless-stopped   -e REACT_APP_API_URL=http://"$IP_ADDR":8000   anylogco/remote-gui:bchain-beta  SHELL
+
 end
