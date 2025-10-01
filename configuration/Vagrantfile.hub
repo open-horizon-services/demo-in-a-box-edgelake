@@ -178,6 +178,9 @@ EOF
     git clone -b edgelake-demo https://github.com/oshadmon/demo-in-a-box
     cd demo-in-a-box
 
+# fix makefile to use latest
+    sed -i 's/^DOCKER_IMAGE_VERSION := 1.3.2504-beta19/DOCKER_IMAGE_VERSION := latest/' Makefile
+
 # publish grafana to exchange
     cd grafana 
     sudo -sE make publish
