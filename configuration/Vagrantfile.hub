@@ -9,6 +9,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 3090, host: 3090, auto_correct: true
   config.vm.network "forwarded_port", guest: 3111, host: 3111, auto_correct: true
   config.vm.network "forwarded_port", guest: 9008, host: 9008, auto_correct: true
+  config.vm.network "forwarded_port", guest: 8000, host: 8000, auto_correct: true
   config.vm.network "forwarded_port", guest: 9443, host: 9443, auto_correct: true
   config.vm.network "forwarded_port", guest: 31800, host: 31800, auto_correct: true
   config.vm.network "forwarded_port", guest: 32048, host: 32048, auto_correct: true
@@ -32,6 +33,7 @@ Vagrant.configure("2") do |config|
     ufw allow 3001/tcp
     ufw allow 3090/tcp
     ufw allow 3111/tcp
+    ufw allow 8000/tcp
     ufw allow 9008/tcp
     ufw allow 9443/tcp
     ufw allow 31800/tcp
