@@ -115,28 +115,28 @@ EOF
 
 # configure master
     cd docker-makefiles/master-configs
-    sed -i 's/^NODE_NAME=.*$/NODE_NAME=$(hostname)-master/' base_configs.env
+    sed -i 's/^NODE_NAME=.*$/NODE_NAME='"$(hostname)"'-master/' base_configs.env
     sed -i 's/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/' base_configs.env
     sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' base_configs.env
     sed -i 's/^REST_BIND=.*$/REST_BIND=true/' base_configs.env
     sed -i 's/^BROKER_BIND=.*$/BROKER_BIND=true/' base_configs.env
-    if grep -q '^NIC_TYPE=' base_configs.env
+    if grep -q '^NIC_TYPE=' advance_configs.env
     then
-      sed -i 's/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/' base_configs.env
+      sed -i 's/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/' advance_configs.env
     else
       echo '\nNIC_TYPE=enp0s8' >> base_configs.env
     fi
 
 # configure query
     cd ../query-configs
-    sed -i 's/^NODE_NAME=.*$/NODE_NAME=$(hostname)-query/' base_configs.env
+    sed -i 's/^NODE_NAME=.*$/NODE_NAME='"$(hostname)"'-query/' base_configs.env
     sed -i 's/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/' base_configs.env
     sed -i 's/^REMOTE_CLI=.*$/REMOTE_CLI=true/' base_configs.env
     sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' base_configs.env
     sed -i 's/^REST_BIND=.*$/REST_BIND=false/' base_configs.env
-    if grep -q '^NIC_TYPE=' base_configs.env
+    if grep -q '^NIC_TYPE=' advance_configs.env
     then
-       sed -i 's/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/' base_configs.env
+       sed -i 's/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/' advance_configs.env
     else
       echo '\nNIC_TYPE=enp0s8' >> base_configs.env
     fi
@@ -189,7 +189,7 @@ EOF
 #modify edgelake operator files for system
    cd ../edgelake/configurations
    sleep 10
-   sed -i 's/^NODE_NAME=.*$/NODE_NAME=$(hostname)-operator/' edgelake_operator.env
+   sed -i 's/^NODE_NAME=.*$/NODE_NAME='"$(hostname)"'-operator/' edgelake_operator.env
    sed -i 's/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/' edgelake_operator.env
    sed -i 's/^ANYLOG_BROKER_PORT=.*$/ANYLOG_BROKER_PORT=32150/' edgelake_operator.env
    sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' edgelake_operator.env
