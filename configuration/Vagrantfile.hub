@@ -114,37 +114,38 @@ EOF
     #sed -i 's/^NIC_TYPE \?=.*/NIC_TYPE ?= enp0s8/' Makefile
 
 # configure master
-    cd docker-makefiles
-    sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-master/" edgelake_master.env
-    sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" edgelake_master.env
-    sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' edgelake_master.env
-    sed -i 's/^REST_BIND=.*$/REST_BIND=true/' edgelake_master.env
-    sed -i 's/^BROKER_BIND=.*$/BROKER_BIND=true/' edgelake_master.env
-    if grep -q "^NIC_TYPE=" edgelake_master.env
+    cd docker-makefiles/master-configs
+    sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-master/" base_configs.env
+    sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" base_configs.env
+    sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' base_configs.env
+    sed -i 's/^REST_BIND=.*$/REST_BIND=true/' base_configs.env
+    sed -i 's/^BROKER_BIND=.*$/BROKER_BIND=true/' base_configs.env
+    if grep -q "^NIC_TYPE=" base_configs.env
     then
-      sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_master.env
+      sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" base_configs.env
     else
-      echo "NIC_TYPE=enp0s8" >> edgelake_master.env
-    fi
+      echo "NIC_TYPE=enp0s8" >> base_configs.env
 
 # configure query
-    sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-query/" edgelake_query.env
-    sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" edgelake_query.env
-    sed -i 's/^REMOTE_CLI=.*$/REMOTE_CLI=true/' edgelake_query.env
-    sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' edgelake_query.env
-    sed -i 's/^REST_BIND=.*$/REST_BIND=false/' edgelake_query.env
-    if grep -q "^NIC_TYPE=" edgelake_query.env
+    cd ../query-configs
+    sed -i "s/^NODE_NAME=.*$/NODE_NAME=$(hostname)-query/" base_configs.env
+    sed -i "s/^LEDGER_CONN=.*$/LEDGER_CONN=192.168.56.10:32048/" base_configs.env
+    sed -i 's/^REMOTE_CLI=.*$/REMOTE_CLI=true/' base_configs.env
+    sed -i 's/^TCP_BIND=.*$/TCP_BIND=true/' base_configs.env
+    sed -i 's/^REST_BIND=.*$/REST_BIND=false/' base_configs.env
+    if grep -q "^NIC_TYPE=" base_configs.env
     then
-       sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" edgelake_query.env
+       sed -i "s/^NIC_TYPE=.*$/NIC_TYPE=enp0s8/" base_configs.env
     else
-      echo "NIC_TYPE=enp0s8" >> edgelake_query.env
+      echo "NIC_TYPE=enp0s8" >> base_configs.env
     fi
 
 # verify configs
+    cd ..
     echo "Master config"
-    cat edgelake_master.env
+    cat master-configs/base_configs.env
     echo "Query config"
-    cat edgelake_query.env
+    cat query-configs/base_configs.env
     sleep 5
 
 # start master/query/cli
