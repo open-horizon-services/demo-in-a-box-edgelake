@@ -2,7 +2,7 @@ The following steps are needed to install Edgelake demo-in-a-box
 
 
 # Clone demo-in-a-box
-git clone -b edgelake-demo https://github.com/oshadman/demo-in-a-box
+git clone https://github.com/open-horizon-services/demo-in-a-box-edgelake
 
 cd demo-in-a-box
 
@@ -10,7 +10,7 @@ cd demo-in-a-box
 export SYSTEM_CONFIGURATION=bicycle
 
 # Install exchange hub
-make up-hub
+make up hub
 
 # Load credentials
 source mycreds.env
