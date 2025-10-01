@@ -28,4 +28,4 @@ make connect VMNAME=agent1
 make connect VMNAME=agent2
 
 # Access to Remote CLI
-http://hostvmserverip:31800
+http://hostvmserverip:3001
