@@ -52,6 +52,8 @@ EOF
 
 # install docker monitoring
   wget https://raw.githubusercontent.com/AnyLog-co/Sample-Data-Generator/refs/heads/os-dev/docker_insight.py
+  sudo apt install python3-pip -y
+  pip3 install docker
   sudo python3 docker_insight.py 192.168.56.20:32149 --db-name new_company --table-name docker_insight --wait 0.5 &
 
     SHELL

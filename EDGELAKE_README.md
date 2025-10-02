@@ -2,7 +2,7 @@ The following steps are needed to install Edgelake demo-in-a-box
 
 
 # Clone demo-in-a-box
-git clone -b edgelake-demo https://github.com/oshadman/demo-in-a-box
+git clone https://github.com/open-horizon-services/demo-in-a-box-edgelake
 
 cd demo-in-a-box
 
@@ -28,4 +28,4 @@ make connect VMNAME=agent1
 make connect VMNAME=agent2
 
 # Access to Remote CLI
-http://hostvmserverip:31800
+http://hostvmserverip:3001

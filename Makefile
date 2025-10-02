@@ -97,9 +97,9 @@ else
 	export SERVICE_VERSION ?= 1.3.5
 	export TEST_CONN ?=
 
-	export DOCKER_IMAGE_VERSION := 1.3.2504-beta19
+	export DOCKER_IMAGE_VERSION := latest
 	ifeq ($(ARCH),aarch64 arm64)
-		DOCKER_IMAGE_VERSION := 1.3.2504-beta19-arm64
+		DOCKER_IMAGE_VERSION := latest
 	endif
 
 	ifneq ($(filter test-node test-network,$(MAKECMDGOALS)),test-node test-network)
