@@ -214,7 +214,12 @@ EOF
 # attach hzn client to ex and pull operator
     hzn unregister -f
     hzn register --policy=edgelake/node.policy.json
-    sleep 60 
+    sleep 60
+
+# clone service-edgelake-federated-learning and publish services and policies
+    git clone -b fix_arch_dep_serv https://github.com/t-fine/service-edgelake-federated-learning.git
+    cd service-edgelake-federated-learning
+    make publish
 
 # install docker monitoring
   wget https://raw.githubusercontent.com/AnyLog-co/Sample-Data-Generator/refs/heads/os-dev/docker_insight.py
